@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -46,10 +47,15 @@ export function OnboardingFlow() {
   };
 
   const handleComplete = () => {
-    console.log('Completing profile with data:', data);
-    const savedProfile = createProfile(data);
-    console.log('Profile saved:', savedProfile);
-    navigate('/profile');
+    try {
+      console.log('Completing profile with data:', data);
+      const savedProfile = createProfile(data);
+      console.log('Profile saved:', savedProfile);
+      navigate('/profile');
+    } catch (e) {
+      console.error('Failed to complete onboarding:', e);
+      toast.error('Could not save your profile. Please try again.');
+    }
   };
 
   const canProceed = () => {
