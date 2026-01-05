@@ -46,7 +46,9 @@ export function OnboardingFlow() {
   };
 
   const handleComplete = () => {
-    createProfile(data);
+    console.log('Completing profile with data:', data);
+    const savedProfile = createProfile(data);
+    console.log('Profile saved:', savedProfile);
     navigate('/profile');
   };
 
