@@ -1,26 +1,22 @@
 import { useState } from "react";
-import { Search, MapPin, Calendar, Filter, ChevronDown } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { Calendar, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import EventCard from "@/components/EventCard";
+import EventRow from "@/components/EventRow";
+import SidebarEventCard from "@/components/SidebarEventCard";
 
 const locations = [
   "All locations",
-  "Munich, Germany",
-  "Zurich, Switzerland",
-  "Geneva, Switzerland",
-  "Vienna, Austria",
-  "Milan, Italy",
-  "Barcelona, Spain",
+  "From Munich",
+  "From Zurich",
+  "From Vienna",
 ];
 
 const activities = [
@@ -29,264 +25,348 @@ const activities = [
   "Climbing",
   "Cycling",
   "Trail Running",
-  "Kayaking",
-  "Skiing",
 ];
 
-const upcomingEvents = [
+// Sample event data organized by date
+const eventsByDate = {
+  "Tomorrow, Saturday": [
+    {
+      id: 1,
+      image: "https://images.unsplash.com/photo-1551632811-561732d1e306?w=600&h=400&fit=crop",
+      time: "6:45",
+      duration: "3 days",
+      title: "A very long event name bla second line",
+      organizer: "Jessica",
+      organizerAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face",
+      departureLocation: "Munich Hbf, pl 29",
+      transportMethod: "Train",
+      activity: "Hiking",
+      difficulty: "T3",
+      distance: "18km",
+      elevation: "1982 elevation",
+      totalHeight: "1800 total height",
+      attendees: 12,
+      availableSpots: 4,
+      attendeeAvatars: [
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face",
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+        "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=face",
+        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face",
+      ],
+    },
+    {
+      id: 2,
+      image: "https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=600&h=400&fit=crop",
+      time: "6:45",
+      duration: "12 hours",
+      title: "Rofanspitze",
+      organizer: "Helena",
+      organizerAvatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face",
+      departureLocation: "Munich",
+      transportMethod: "Carpool",
+      activity: "Cycling",
+      difficulty: "T3",
+      distance: "18km",
+      elevation: "1982 elevation",
+      totalHeight: "1800 descent",
+      attendees: 20,
+      waitlist: 20,
+      attendeeAvatars: [
+        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face",
+        "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop&crop=face",
+        "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=face",
+      ],
+    },
+    {
+      id: 3,
+      image: "https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?w=600&h=400&fit=crop",
+      time: "6:45",
+      duration: "1 day",
+      title: "Tannheimer Berge",
+      organizer: "John Doe",
+      organizerAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+      departureLocation: "Munich",
+      transportMethod: "Bus",
+      activity: "Hiking",
+      difficulty: "T3",
+      distance: "18km",
+      elevation: "1982 elevation",
+      totalHeight: "2234 total height",
+      attendees: 12,
+      availableSpots: 4,
+      attendeeAvatars: [
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face",
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
+      ],
+    },
+    {
+      id: 4,
+      image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&h=400&fit=crop",
+      time: "8:00",
+      duration: "12 days",
+      title: "Event name bla second line",
+      organizer: "Freddy",
+      organizerAvatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
+      departureLocation: "Munich Hbf",
+      transportMethod: "No transport",
+      activity: "Hiking",
+      difficulty: "T3",
+      distance: "18km",
+      elevation: "1982 elevation",
+      totalHeight: "1800 descent",
+      attendees: 20,
+      waitlist: 20,
+      attendeeAvatars: [
+        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face",
+        "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=face",
+      ],
+    },
+  ],
+  "Jun 23, Sunday": [
+    {
+      id: 5,
+      image: "https://images.unsplash.com/photo-1501555088652-021faa106b9b?w=600&h=400&fit=crop",
+      time: "6:45",
+      duration: "12 hours",
+      title: "Event name bla second line",
+      organizer: "Larissa",
+      organizerAvatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=face",
+      departureLocation: "Zurich Hbf",
+      transportMethod: "Bus",
+      activity: "Hiking",
+      difficulty: "T3",
+      distance: "18km",
+      elevation: "1982 elevation",
+      totalHeight: "2234 total height",
+      attendees: 12,
+      availableSpots: 4,
+      attendeeAvatars: [
+        "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face",
+        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face",
+      ],
+    },
+    {
+      id: 6,
+      image: "https://images.unsplash.com/photo-1522163182402-834f871fd851?w=600&h=400&fit=crop",
+      time: "6:45",
+      duration: "1 day",
+      title: "Hiking the highest peak",
+      organizer: "Laurence",
+      organizerAvatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop&crop=face",
+      departureLocation: "Munich deutsche...",
+      transportMethod: "No transport",
+      activity: "Hiking",
+      difficulty: "T3",
+      distance: "18km",
+      elevation: "1982 elevation",
+      totalHeight: "1800 decent",
+      attendees: 20,
+      waitlist: 20,
+      attendeeAvatars: [
+        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face",
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
+      ],
+    },
+  ],
+};
+
+// User's personal events for the sidebar
+const userUpcomingEvents = [
   {
     id: 1,
-    image: "https://images.unsplash.com/photo-1551632811-561732d1e306?w=600&h=400&fit=crop",
-    date: "Mar 15",
-    title: "Sunrise Hike to Zugspitze",
-    organizer: "Alpine Explorers",
-    rating: 4.9,
-    attendees: 24,
+    date: "Jun 30",
+    dayOfWeek: "Sat",
+    title: "Full-carpool After Work hike to Kampenwand",
+    time: "6:45",
+    location: "Munich",
+    transportMethod: "Train",
+    activity: "Cycling",
+    difficulty: "Medium",
+    distance: "18km",
+    elevation: "560m",
     attendeeAvatars: [
       "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face",
       "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
-      "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=face",
     ],
-    location: "Munich, Germany",
-    activity: "Hiking",
-    featured: true,
+    additionalAttendees: 14,
+    organizer: "Jean-Chrisian",
   },
   {
     id: 2,
-    image: "https://images.unsplash.com/photo-1522163182402-834f871fd851?w=600&h=400&fit=crop",
-    date: "Mar 18",
-    title: "Rock Climbing Weekend",
-    organizer: "Summit Seekers",
-    rating: 4.8,
-    attendees: 12,
+    date: "Jun 30",
+    dayOfWeek: "Sat",
+    title: "Full-carpool After Work hike to Kampenwand",
+    time: "6:45",
+    location: "Munich",
+    transportMethod: "Train",
+    activity: "Cycling",
+    difficulty: "Medium",
+    distance: "18km",
+    elevation: "560m",
     attendeeAvatars: [
       "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face",
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
-    ],
-    location: "Zurich, Switzerland",
-    activity: "Climbing",
-    featured: true,
-  },
-  {
-    id: 3,
-    image: "https://images.unsplash.com/photo-1541625602330-2277a4c46182?w=600&h=400&fit=crop",
-    date: "Mar 20",
-    title: "Mountain Bike Trail Adventure",
-    organizer: "Trail Blazers",
-    rating: 4.7,
-    attendees: 18,
-    attendeeAvatars: [
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face",
-      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&h=100&fit=crop&crop=face",
       "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=face",
     ],
-    location: "Geneva, Switzerland",
-    activity: "Cycling",
-    featured: false,
+    additionalAttendees: 14,
+    organizer: "Jean-Chrisian",
   },
+];
+
+const userPastEvents = [
   {
-    id: 4,
-    image: "https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?w=600&h=400&fit=crop",
-    date: "Mar 22",
-    title: "Dolomites Day Hike",
-    organizer: "Mountain Friends",
-    rating: 4.9,
-    attendees: 30,
+    id: 1,
+    date: "Jun 30",
+    dayOfWeek: "Sat",
+    title: "Full-carpool After Work hike to Kampenwand",
+    time: "6:45",
+    location: "Munich",
+    transportMethod: "Train",
+    activity: "Cycling",
+    difficulty: "Medium",
+    distance: "18km",
+    elevation: "560m",
     attendeeAvatars: [
       "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face",
       "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
     ],
-    location: "Milan, Italy",
-    activity: "Hiking",
-    soldOut: true,
-    featured: false,
-  },
-  {
-    id: 5,
-    image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&h=400&fit=crop",
-    date: "Mar 25",
-    title: "Alpine Trail Running",
-    organizer: "Run Wild Club",
-    rating: 4.6,
-    attendees: 15,
-    attendeeAvatars: [
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face",
+    additionalAttendees: 14,
+    organizer: "Jean-Chrisian",
+    isPast: true,
+    images: [
+      "https://images.unsplash.com/photo-1551632811-561732d1e306?w=200&h=200&fit=crop",
+      "https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?w=200&h=200&fit=crop",
+      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=200&h=200&fit=crop",
     ],
-    location: "Vienna, Austria",
-    activity: "Trail Running",
-    featured: false,
-  },
-  {
-    id: 6,
-    image: "https://images.unsplash.com/photo-1501555088652-021faa106b9b?w=600&h=400&fit=crop",
-    date: "Mar 28",
-    title: "Lake Kayaking Experience",
-    organizer: "Water Adventures",
-    rating: 4.8,
-    attendees: 8,
-    attendeeAvatars: [
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face",
-    ],
-    location: "Geneva, Switzerland",
-    activity: "Kayaking",
-    featured: false,
   },
 ];
 
+type FilterTab = "upcoming" | "location" | "activity";
+
 const Events = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedLocation, setSelectedLocation] = useState("All locations");
+  const [activeTab, setActiveTab] = useState<FilterTab>("upcoming");
+  const [selectedLocation, setSelectedLocation] = useState("From Munich");
   const [selectedActivity, setSelectedActivity] = useState("All activities");
-
-  const filteredEvents = upcomingEvents.filter((event) => {
-    const matchesSearch =
-      event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      event.organizer.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesLocation =
-      selectedLocation === "All locations" || event.location === selectedLocation;
-    const matchesActivity =
-      selectedActivity === "All activities" || event.activity === selectedActivity;
-    return matchesSearch && matchesLocation && matchesActivity;
-  });
-
-  const featuredEvents = filteredEvents.filter((e) => e.featured);
-  const regularEvents = filteredEvents.filter((e) => !e.featured);
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
 
-      <main className="flex-1">
-        {/* Hero Section */}
-        <section className="bg-gradient-to-br from-primary/5 via-background to-primary/10 py-12 md:py-16">
-          <div className="container max-w-6xl mx-auto px-6">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight mb-4">
-              Discover Events
+      <main className="flex-1 container max-w-7xl mx-auto px-6 py-8">
+        <div className="flex gap-8">
+          {/* Main Content */}
+          <div className="flex-1 min-w-0">
+            <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
+              Events
             </h1>
-            <p className="text-muted-foreground text-lg max-w-2xl mb-8">
-              Find your next adventure. Join upcoming hikes, climbs, and outdoor experiences with fellow enthusiasts.
-            </p>
 
-            {/* Search and Filters */}
-            <div className="bg-card rounded-2xl shadow-lg p-4 md:p-6 border border-border">
-              <div className="flex flex-col md:flex-row gap-4">
-                {/* Search Input */}
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                  <Input
-                    placeholder="Search events, organizers..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 h-12 text-base"
-                  />
+            {/* Filter Tabs */}
+            <div className="flex items-center gap-1 mb-8 border-b border-border">
+              <button
+                onClick={() => setActiveTab("upcoming")}
+                className={`px-4 py-2.5 text-sm font-medium transition-colors border-b-2 -mb-px ${
+                  activeTab === "upcoming"
+                    ? "border-primary text-foreground"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                Upcoming events
+              </button>
+              <button
+                onClick={() => setActiveTab("location")}
+                className={`px-4 py-2.5 text-sm font-medium transition-colors border-b-2 -mb-px ${
+                  activeTab === "location"
+                    ? "border-primary text-foreground"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {selectedLocation}
+              </button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    className={`flex items-center gap-1 px-4 py-2.5 text-sm font-medium transition-colors border-b-2 -mb-px ${
+                      activeTab === "activity"
+                        ? "border-primary text-foreground"
+                        : "border-transparent text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {selectedActivity}
+                    <ChevronDown className="h-4 w-4" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start">
+                  {activities.map((activity) => (
+                    <DropdownMenuItem
+                      key={activity}
+                      onClick={() => {
+                        setSelectedActivity(activity);
+                        setActiveTab("activity");
+                      }}
+                    >
+                      {activity}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+
+            {/* Events List */}
+            {Object.entries(eventsByDate).map(([dateLabel, events]) => (
+              <div key={dateLabel} className="mb-8">
+                {/* Date Header */}
+                <div className="flex items-baseline gap-8 mb-2">
+                  <h2 className="text-lg font-semibold text-foreground">{dateLabel}</h2>
+                  <div className="hidden lg:flex items-center gap-8 text-xs text-muted-foreground uppercase tracking-wide">
+                    <span className="w-[140px]">Departing from</span>
+                    <span className="w-[180px]">Activity</span>
+                    <span>Participants</span>
+                  </div>
                 </div>
 
-                {/* Location Filter */}
-                <Select value={selectedLocation} onValueChange={setSelectedLocation}>
-                  <SelectTrigger className="w-full md:w-[200px] h-12">
-                    <MapPin className="h-4 w-4 mr-2 text-muted-foreground" />
-                    <SelectValue placeholder="Location" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {locations.map((location) => (
-                      <SelectItem key={location} value={location}>
-                        {location}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-
-                {/* Activity Filter */}
-                <Select value={selectedActivity} onValueChange={setSelectedActivity}>
-                  <SelectTrigger className="w-full md:w-[180px] h-12">
-                    <Filter className="h-4 w-4 mr-2 text-muted-foreground" />
-                    <SelectValue placeholder="Activity" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {activities.map((activity) => (
-                      <SelectItem key={activity} value={activity}>
-                        {activity}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                {/* Event Rows */}
+                <div>
+                  {events.map((event) => (
+                    <EventRow key={event.id} {...event} />
+                  ))}
+                </div>
               </div>
-            </div>
-          </div>
-        </section>
+            ))}
 
-        {/* Featured Events */}
-        {featuredEvents.length > 0 && (
-          <section className="py-12 md:py-16">
-            <div className="container max-w-6xl mx-auto px-6">
-              <div className="flex items-center gap-3 mb-8">
-                <span className="px-3 py-1 bg-primary/10 text-primary text-sm font-semibold rounded-full">
-                  Featured
-                </span>
-                <h2 className="text-2xl font-bold">Recommended for you</h2>
-              </div>
-              <div className="grid sm:grid-cols-2 gap-6">
-                {featuredEvents.map((event) => (
-                  <EventCard key={event.id} {...event} />
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* All Events */}
-        <section className="py-12 md:py-16 bg-muted/30">
-          <div className="container max-w-6xl mx-auto px-6">
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-2xl font-bold">
-                Upcoming Events
-                <span className="ml-2 text-muted-foreground font-normal text-lg">
-                  ({filteredEvents.length})
-                </span>
-              </h2>
-            </div>
-
-            {filteredEvents.length > 0 ? (
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {(regularEvents.length > 0 ? regularEvents : filteredEvents).map((event) => (
-                  <EventCard key={event.id} {...event} />
-                ))}
-              </div>
-            ) : (
+            {/* Empty State */}
+            {Object.keys(eventsByDate).length === 0 && (
               <div className="text-center py-16">
                 <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
                   <Calendar className="h-8 w-8 text-muted-foreground" />
                 </div>
                 <h3 className="text-lg font-semibold mb-2">No events found</h3>
                 <p className="text-muted-foreground max-w-md mx-auto">
-                  Try adjusting your filters or search query to find events that match your interests.
+                  Try adjusting your filters to find events that match your interests.
                 </p>
               </div>
             )}
           </div>
-        </section>
 
-        {/* CTA Section */}
-        <section className="py-16 md:py-20">
-          <div className="container max-w-6xl mx-auto px-6">
-            <div className="bg-primary rounded-3xl p-8 md:p-12 text-center">
-              <h2 className="text-2xl md:text-3xl font-bold text-primary-foreground mb-4">
-                Can't find the perfect event?
-              </h2>
-              <p className="text-primary-foreground/80 max-w-lg mx-auto mb-6">
-                Create your own adventure and invite others to join. It's easy and free!
-              </p>
-              <Button
-                size="lg"
-                variant="secondary"
-                className="font-semibold"
-              >
-                Create an Event
-              </Button>
+          {/* Right Sidebar */}
+          <aside className="hidden lg:block w-80 flex-shrink-0">
+            {/* Your upcoming events */}
+            <div className="bg-muted/30 rounded-xl p-4 mb-6">
+              <h3 className="font-semibold text-foreground mb-2">Your upcoming events</h3>
+              {userUpcomingEvents.map((event) => (
+                <SidebarEventCard key={event.id} {...event} />
+              ))}
             </div>
-          </div>
-        </section>
+
+            {/* Your past events */}
+            <div className="bg-muted/30 rounded-xl p-4">
+              <h3 className="font-semibold text-foreground mb-2">Your past events</h3>
+              {userPastEvents.map((event) => (
+                <SidebarEventCard key={event.id} {...event} isPast />
+              ))}
+            </div>
+          </aside>
+        </div>
       </main>
 
       <Footer />
