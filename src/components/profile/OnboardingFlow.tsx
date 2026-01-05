@@ -52,8 +52,26 @@ export function OnboardingFlow() {
       const savedProfile = createProfile(data);
       console.log('Profile saved:', savedProfile);
       navigate('/profile');
-    } catch (e) {
+    } catch (e: any) {
       console.error('Failed to complete onboarding:', e);
+
+      // Most common cause: localStorage quota exceeded due to a large uploaded photo.
+      const isQuota =
+        (typeof DOMException !== 'undefined' && e instanceof DOMException && e.name === 'QuotaExceededError') ||
+        e?.name === 'QuotaExceededError';
+
+      if (isQuota) {
+        try {
+          localStorage.removeItem('hiking_buddies_profile');
+          createProfile({ ...data, photoUrl: undefined });
+          toast.warning('Photo was too large to save, so we skipped it.');
+          navigate('/profile');
+          return;
+        } catch (e2) {
+          console.error('Retry after quota failed:', e2);
+        }
+      }
+
       toast.error('Could not save your profile. Please try again.');
     }
   };
