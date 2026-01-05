@@ -2,12 +2,14 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Search, X } from "lucide-react";
 import { Button } from "./ui/button";
+import { useProfile } from "@/hooks/useProfile";
 import { Input } from "./ui/input";
 
 const Header = () => {
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+  const { profile, hasProfile } = useProfile();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,13 +80,27 @@ const Header = () => {
               >
                 <Search className="h-5 w-5 text-muted-foreground" />
               </button>
-              <div className="h-9 w-9 rounded-full bg-muted overflow-hidden">
-                <img
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face"
-                  alt="Profile"
-                  className="h-full w-full object-cover"
-                />
-              </div>
+              <Link to="/profile" className="h-9 w-9 rounded-full bg-muted overflow-hidden block">
+                {hasProfile && profile?.photoUrl ? (
+                  <img
+                    src={profile.photoUrl}
+                    alt="Profile"
+                    className="h-full w-full object-cover"
+                  />
+                ) : hasProfile && profile?.displayName ? (
+                  <div className="h-full w-full bg-primary/20 flex items-center justify-center">
+                    <span className="text-sm font-bold text-primary">
+                      {profile.displayName.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                ) : (
+                  <img
+                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face"
+                    alt="Profile"
+                    className="h-full w-full object-cover"
+                  />
+                )}
+              </Link>
             </>
           )}
         </div>
