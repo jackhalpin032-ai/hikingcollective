@@ -282,9 +282,31 @@ export default function Profile() {
             </div>
 
             {/* Bio */}
-            <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+            <p className="text-sm text-muted-foreground mb-3 leading-relaxed">
               {displayProfile.bio}
             </p>
+
+            {/* Social Proof Badges - Positive & Encouraging */}
+            <div className="flex flex-wrap gap-2 mb-4">
+              <Badge variant="secondary" className="bg-primary/10 text-primary border-0 px-3 py-1 text-xs font-medium">
+                <Calendar className="w-3 h-3 mr-1.5" />
+                Attended {displayProfile.stats.hikesCompleted} hikes
+              </Badge>
+              <Badge variant="secondary" className="bg-amber-500/10 text-amber-600 border-0 px-3 py-1 text-xs font-medium">
+                <Users className="w-3 h-3 mr-1.5" />
+                Hiked with {hikingBuddies.reduce((acc, b) => acc + b.hikesTogther, 0)} people
+              </Badge>
+              <Badge variant="secondary" className="bg-violet-500/10 text-violet-600 border-0 px-3 py-1 text-xs font-medium">
+                <Sparkles className="w-3 h-3 mr-1.5" />
+                Community contributor
+              </Badge>
+              {displayProfile.stats.eventsOrganised > 5 && (
+                <Badge variant="secondary" className="bg-rose-500/10 text-rose-600 border-0 px-3 py-1 text-xs font-medium">
+                  <Mountain className="w-3 h-3 mr-1.5" />
+                  Organised {displayProfile.stats.eventsOrganised} adventures
+                </Badge>
+              )}
+            </div>
 
             {/* Action buttons */}
             <div className="flex gap-2 mb-4">
