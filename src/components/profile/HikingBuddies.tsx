@@ -17,7 +17,7 @@ export default function HikingBuddies({ buddies, onViewAll }: HikingBuddiesProps
   return (
     <div className="bg-card rounded-2xl p-5 shadow-sm border border-border/50">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-bold text-foreground">Hiking Buddies</h3>
+        <h3 className="font-bold text-foreground">Trail Companions</h3>
         {onViewAll && (
           <button 
             onClick={onViewAll}

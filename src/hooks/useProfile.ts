@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { UserProfile } from '@/types/profile';
 
-const STORAGE_KEY = 'hiking_buddies_profile';
+const STORAGE_KEY = 'hiking_collective_profile';
 
 const generateId = () => {
   // Avoid direct `crypto.randomUUID()` at module init; it's not supported everywhere.

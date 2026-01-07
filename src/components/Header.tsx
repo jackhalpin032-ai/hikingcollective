@@ -39,7 +39,7 @@ const Header = () => {
             <path d="M10 18C10 16 12 14 14 14C16 14 18 16 18 18" stroke="hsl(var(--warning))" strokeWidth="2" strokeLinecap="round" />
             <circle cx="14" cy="10" r="2" fill="hsl(var(--warning))" />
           </svg>
-          <span className="text-xl font-bold italic text-primary">Hiking Buddies</span>
+          <span className="text-xl font-bold italic text-primary">The Hiking Collective</span>
         </Link>
 
         {/* Navigation */}
