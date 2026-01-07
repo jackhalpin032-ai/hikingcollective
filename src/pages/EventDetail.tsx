@@ -69,17 +69,17 @@ const mockEvents: Record<string, {
 }> = {
   '1': {
     id: '1',
-    title: 'Wendelstein sunrise hike',
-    description: 'Experience the magic of watching the sunrise from one of Bavaria\'s most iconic peaks! We\'ll start early to reach the summit just as the first rays of light paint the Alps in golden hues. This is a moderate hike suitable for those with some hiking experience.',
+    title: 'Carrauntoohil sunrise hike',
+    description: "Experience the magic of watching the sunrise from Ireland's highest peak! We'll start early to reach the summit just as the first rays of light paint the MacGillycuddy's Reeks in golden hues. This is a challenging hike suitable for those with mountain hiking experience.",
     date: 'Saturday, January 11, 2025',
     time: '5:30 AM',
-    meetingPoint: 'Munich Hauptbahnhof, Platform 12',
-    location: 'Wendelstein, Bavaria',
+    meetingPoint: 'Dublin Heuston Station, Platform 4',
+    location: 'Carrauntoohil, County Kerry',
     transport: 'Car (carpooling available)',
     difficulty: 'T3',
     distance: '14km',
-    elevation: '1240m',
-    duration: '5h 30min',
+    elevation: '1040m',
+    duration: '6h',
     maxParticipants: 12,
     currentParticipants: 9,
     status: 'organiser',
@@ -101,52 +101,52 @@ const mockEvents: Record<string, {
     ],
     requirements: [
       'Good fitness level',
-      'Previous hiking experience recommended',
+      'Previous mountain hiking experience required',
       'Headlamp required for early start',
-      'Warm layers for summit temperatures'
+      'Waterproof layers essential'
     ],
     whatToBring: [
       'Hiking boots with good ankle support',
       'Headlamp with spare batteries',
-      'Warm layers (temps around 0°C at summit)',
+      'Waterproof jacket and trousers',
       '2L water minimum',
       'Snacks and packed breakfast',
-      'Sunglasses and sunscreen',
+      'Warm hat and gloves',
       'First aid kit',
-      'Trekking poles (optional)'
+      'Trekking poles (recommended)'
     ],
     weather: {
-      condition: 'Clear',
-      temp: '-2°C to 8°C',
-      wind: '15 km/h',
-      humidity: '45%'
+      condition: 'Partly cloudy',
+      temp: '4°C to 12°C',
+      wind: '20 km/h',
+      humidity: '75%'
     },
     route: {
       highlights: [
-        'Spectacular sunrise views over the Alps',
-        'Panoramic summit with 360° views',
-        'Historic Wendelstein Chapel',
-        'Optional cable car descent'
+        'Spectacular sunrise views over Kerry',
+        "Summit of Ireland's highest peak (1,039m)",
+        'Views of the Lakes of Killarney',
+        'Wild Atlantic coastline visible on clear days'
       ],
       warnings: [
         'Early start required - meet at 5:30 AM sharp',
-        'Summit can be cold and windy',
-        'Some exposed sections near the top'
+        'Summit can be very exposed and windy',
+        'Weather changes quickly - be prepared for rain'
       ]
     }
   },
   '2': {
     id: '2',
-    title: 'Herzogstand panorama trail',
-    description: 'A classic Bavarian hike with stunning views of the Walchensee and surrounding peaks. Perfect for a day out with fellow hiking enthusiasts!',
+    title: 'Wicklow Way scenic trail',
+    description: 'A beautiful section of the famous Wicklow Way with stunning views of Glendalough and the surrounding valleys. Perfect for a day out with fellow hiking enthusiasts!',
     date: 'Sunday, January 12, 2025',
     time: '8:00 AM',
-    meetingPoint: 'Munich Hauptbahnhof, S-Bahn Platform',
-    location: 'Herzogstand, Bavaria',
-    transport: 'Train',
+    meetingPoint: 'Dublin Connolly Station, DART Platform',
+    location: 'Wicklow Mountains, County Wicklow',
+    transport: 'Bus',
     difficulty: 'T2',
     distance: '12km',
-    elevation: '890m',
+    elevation: '450m',
     duration: '4h',
     maxParticipants: 15,
     currentParticipants: 13,
@@ -176,25 +176,25 @@ const mockEvents: Record<string, {
     ],
     whatToBring: [
       'Comfortable hiking shoes',
-      'Weather-appropriate clothing',
+      'Waterproof jacket',
       '1.5L water',
       'Lunch and snacks',
       'Small backpack'
     ],
     weather: {
       condition: 'Partly cloudy',
-      temp: '5°C to 12°C',
-      wind: '10 km/h',
-      humidity: '55%'
+      temp: '8°C to 14°C',
+      wind: '15 km/h',
+      humidity: '70%'
     },
     route: {
       highlights: [
-        'Views of Walchensee and Kochelsee',
-        'Ridge walk between Herzogstand and Heimgarten',
-        'Traditional Bavarian hut for refreshments'
+        'Views of Glendalough monastic site',
+        'Ancient oak woodlands',
+        'Cosy pub stop in Roundwood village'
       ],
       warnings: [
-        'Ridge can be slippery when wet'
+        'Trail can be muddy after rain - wear waterproof boots'
       ]
     }
   }
