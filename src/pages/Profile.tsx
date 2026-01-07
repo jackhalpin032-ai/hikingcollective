@@ -81,6 +81,7 @@ const reviews = [
 
 const activities = [
   {
+    id: '1',
     organizer: { name: "Jack", additionalCount: 8 },
     title: "Wendelstein sunrise hike",
     time: "5:30",
@@ -93,6 +94,7 @@ const activities = [
     status: 'organiser' as const,
   },
   {
+    id: '2',
     organizer: { name: "Lisa", additionalCount: 12 },
     title: "Herzogstand panorama trail",
     time: "8:00",

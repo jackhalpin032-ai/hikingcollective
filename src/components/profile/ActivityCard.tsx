@@ -1,10 +1,12 @@
+import { useNavigate } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Mountain, MapPin, Train, Clock, ArrowLeftRight, TrendingUp, Share2, MessageCircle } from 'lucide-react';
+import { Mountain, Train, Clock, ArrowLeftRight, TrendingUp, Share2, MessageCircle } from 'lucide-react';
 import DifficultyBadge from './DifficultyBadge';
 
 interface ActivityCardProps {
+  id?: string;
   organizer: {
     name: string;
     photo?: string;
@@ -24,6 +26,7 @@ interface ActivityCardProps {
 }
 
 export default function ActivityCard({ 
+  id = '1',
   organizer, 
   title, 
   time, 
@@ -37,6 +40,7 @@ export default function ActivityCard({
   spotsAvailable,
   onAction 
 }: ActivityCardProps) {
+  const navigate = useNavigate();
   const statusBadge = () => {
     switch (status) {
       case 'going':
@@ -64,7 +68,10 @@ export default function ActivityCard({
   };
 
   return (
-    <div className="bg-card rounded-2xl p-5 shadow-sm border border-border/50">
+    <div 
+      className="bg-card rounded-2xl p-5 shadow-sm border border-border/50 cursor-pointer hover:shadow-md transition-shadow"
+      onClick={() => navigate(`/events/${id}`)}
+    >
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">

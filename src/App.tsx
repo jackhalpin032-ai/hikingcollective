@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Events from "./pages/Events";
+import EventDetail from "./pages/EventDetail";
 import Profile from "./pages/Profile";
 import ProfileOnboarding from "./pages/ProfileOnboarding";
 import ProfileEdit from "./pages/ProfileEdit";
@@ -21,6 +22,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/events" element={<Events />} />
+          <Route path="/events/:id" element={<EventDetail />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/onboarding" element={<ProfileOnboarding />} />
           <Route path="/profile/edit" element={<ProfileEdit />} />
