@@ -1,9 +1,18 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, X } from "lucide-react";
+import { Search, X, User, ChevronDown } from "lucide-react";
 import { Button } from "./ui/button";
 import { useProfile } from "@/hooks/useProfile";
 import { Input } from "./ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import jackPhoto from "@/assets/jack-profile.jpeg";
 
 const Header = () => {
   const [showSearch, setShowSearch] = useState(false);
@@ -49,7 +58,7 @@ const Header = () => {
           </Button>
         </nav>
 
-        {/* Right side - Search */}
+        {/* Right side - Search & Profile */}
         <div className="flex items-center gap-3">
           {showSearch ? (
             <form onSubmit={handleSearch} className="flex items-center gap-2">
@@ -80,27 +89,46 @@ const Header = () => {
               >
                 <Search className="h-5 w-5 text-muted-foreground" />
               </button>
-              <Link to="/profile" className="h-9 w-9 rounded-full bg-muted overflow-hidden block">
-                {hasProfile && profile?.photoUrl ? (
-                  <img
-                    src={profile.photoUrl}
-                    alt="Profile"
-                    className="h-full w-full object-cover"
-                  />
-                ) : hasProfile && profile?.displayName ? (
-                  <div className="h-full w-full bg-primary/20 flex items-center justify-center">
-                    <span className="text-sm font-bold text-primary">
-                      {profile.displayName.charAt(0).toUpperCase()}
+              
+              {/* Profile Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="flex items-center gap-2 px-2 h-10 hover:bg-muted">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={jackPhoto} alt="Jack" />
+                      <AvatarFallback className="bg-primary/20 text-primary text-sm font-semibold">
+                        {hasProfile && profile?.displayName 
+                          ? profile.displayName.charAt(0).toUpperCase() 
+                          : 'J'}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="hidden md:block text-sm font-medium text-foreground">
+                      Jack
                     </span>
-                  </div>
-                ) : (
-                  <img
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face"
-                    alt="Profile"
-                    className="h-full w-full object-cover"
-                  />
-                )}
-              </Link>
+                    <ChevronDown className="h-4 w-4 text-muted-foreground hidden md:block" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem onClick={() => navigate('/profile')} className="cursor-pointer">
+                    <User className="mr-2 h-4 w-4" />
+                    My Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/profile/edit')} className="cursor-pointer">
+                    Edit Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate('/events')} className="cursor-pointer">
+                    My Events
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="cursor-pointer">
+                    Saved Routes
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem className="cursor-pointer text-muted-foreground">
+                    Sign out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </>
           )}
         </div>
