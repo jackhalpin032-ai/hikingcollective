@@ -62,7 +62,7 @@ export function OnboardingFlow() {
 
       if (isQuota) {
         try {
-          localStorage.removeItem('hiking_buddies_profile');
+          localStorage.removeItem('hiking_collective_profile');
           createProfile({ ...data, photoUrl: undefined });
           toast.warning('Photo was too large to save, so we skipped it.');
           navigate('/profile');
