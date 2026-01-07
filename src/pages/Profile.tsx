@@ -26,9 +26,9 @@ import {
 const jackProfile = {
   displayName: 'Jack',
   age: 30,
-  location: { city: 'Munich', country: 'Germany' },
+  location: { city: 'Dublin', country: 'Ireland' },
   experienceLevel: 'intermediate' as const,
-  bio: 'Outdoor enthusiast who loves exploring the Alps. Always up for a challenging hike or a relaxed nature walk with good company!',
+  bio: 'Outdoor enthusiast who loves exploring the Wicklow Mountains and wild Atlantic coastline. Always up for a challenging hike or a relaxed nature walk with good company!',
   stats: {
     yearsHiking: 3,
     eventsOrganised: 12,
@@ -62,19 +62,19 @@ const reviews = [
   {
     content: "Jack is an amazing organiser! The hike was well planned and he made sure everyone was comfortable throughout.",
     reviewerName: "Sarah",
-    eventName: "Zugspitze Summit",
+    eventName: "Carrauntoohil Summit",
     date: "Nov 2024"
   },
   {
     content: "Great energy and really knows the trails. Would definitely join his events again!",
     reviewerName: "Marcus",
-    eventName: "Partnachklamm Trail",
+    eventName: "Glendalough Valley",
     date: "Oct 2024"
   },
   {
     content: "Jack kept the pace perfect for everyone. Really inclusive and fun experience!",
     reviewerName: "Elena",
-    eventName: "Schliersee Loop",
+    eventName: "Bray to Greystones",
     date: "Sep 2024"
   }
 ];
@@ -83,26 +83,26 @@ const activities = [
   {
     id: '1',
     organizer: { name: "Jack", additionalCount: 8 },
-    title: "Wendelstein sunrise hike",
+    title: "Carrauntoohil sunrise hike",
     time: "5:30",
-    location: "Munich",
+    location: "Dublin",
     transport: "Car",
     difficulty: "T3",
     distance: "14km",
-    elevation: "1240m",
-    duration: "5h 30min",
+    elevation: "1040m",
+    duration: "6h",
     status: 'organiser' as const,
   },
   {
     id: '2',
     organizer: { name: "Lisa", additionalCount: 12 },
-    title: "Herzogstand panorama trail",
+    title: "Wicklow Way scenic trail",
     time: "8:00",
-    location: "Munich",
-    transport: "Train",
+    location: "Dublin",
+    transport: "Bus",
     difficulty: "T2",
     distance: "12km",
-    elevation: "890m",
+    elevation: "450m",
     duration: "4h",
     status: 'going' as const,
   },
@@ -184,7 +184,7 @@ export default function Profile() {
                 Sustainer
               </Badge>
               <Badge variant="secondary" className="rounded-full px-3 py-1 text-xs font-medium flex items-center gap-1">
-                <span className="text-base">🇩🇪</span>
+                <span className="text-base">🇮🇪</span>
                 Based in {displayProfile.location.country}
               </Badge>
             </div>
