@@ -23,12 +23,10 @@ export default function ProfileEdit() {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    if (!isLoading && !hasProfile) {
-      navigate('/profile/onboarding');
-    } else if (profile) {
+    if (!isLoading && profile) {
       setFormData(profile);
     }
-  }, [isLoading, hasProfile, profile, navigate]);
+  }, [isLoading, profile]);
 
   const updateField = <K extends keyof UserProfile>(key: K, value: UserProfile[K]) => {
     setFormData(prev => ({ ...prev, [key]: value }));

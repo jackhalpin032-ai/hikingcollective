@@ -207,11 +207,6 @@ export default function Profile() {
   const { profile, isLoading, hasProfile } = useProfile();
   const [activeTab, setActiveTab] = useState<'activity' | 'upcoming' | 'past' | 'organised'>('activity');
 
-  useEffect(() => {
-    if (!isLoading && !hasProfile) {
-      navigate('/profile/onboarding');
-    }
-  }, [isLoading, hasProfile, navigate]);
 
   if (isLoading) {
     return (
