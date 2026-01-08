@@ -22,7 +22,7 @@ const Hero = () => {
         <div className="container max-w-6xl mx-auto px-6 py-16 md:py-24">
           <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
             {/* Left content */}
-            <div className="order-2 md:order-1 text-center md:text-left">
+            <div className="order-2 md:order-1 text-center md:text-left bg-background/70 backdrop-blur-sm rounded-2xl p-6 md:p-8">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
                 <Mountain className="w-4 h-4" />
                 Join the adventure
