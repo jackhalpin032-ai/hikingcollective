@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Clock, MapPin, Mountain, ArrowRight } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -109,9 +110,12 @@ export default function RouteCard({ route }: RouteCardProps) {
         <Button 
           variant="ghost" 
           className="w-full justify-between group/btn hover:bg-primary hover:text-primary-foreground transition-colors"
+          asChild
         >
-          <span>View Route</span>
-          <ArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
+          <Link to={`/routes/${route.id}`}>
+            <span>View Route</span>
+            <ArrowRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
+          </Link>
         </Button>
       </CardContent>
     </Card>
