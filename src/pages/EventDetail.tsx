@@ -6,6 +6,8 @@ import { Card } from '@/components/ui/card';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import DifficultyBadge from '@/components/profile/DifficultyBadge';
+import { useEventById } from '@/hooks/useEventById';
+import { getEmptyStateCopy } from '@/lib/emptyStates';
 import { 
   ArrowLeft,
   Calendar,
@@ -27,193 +29,35 @@ import {
   CheckCircle2
 } from 'lucide-react';
 
-// Mock event data - in production this would come from an API/database
-const mockEvents: Record<string, {
-  id: string;
-  title: string;
-  description: string;
-  date: string;
-  time: string;
-  meetingPoint: string;
-  location: string;
-  transport: string;
-  difficulty: string;
-  distance: string;
-  elevation: string;
-  duration: string;
-  maxParticipants: number;
-  currentParticipants: number;
-  status: 'going' | 'organiser' | 'closed' | 'available';
-  organizer: {
-    name: string;
-    photo?: string;
-    rating: number;
-    eventsOrganised: number;
-  };
-  participants: Array<{
-    name: string;
-    photo?: string;
-  }>;
-  requirements: string[];
-  whatToBring: string[];
-  weather: {
-    condition: string;
-    temp: string;
-    wind: string;
-    humidity: string;
-  };
-  route: {
-    highlights: string[];
-    warnings: string[];
-  };
-}> = {
-  '1': {
-    id: '1',
-    title: 'Carrauntoohil sunrise hike',
-    description: "Experience the magic of watching the sunrise from Ireland's highest peak! We'll start early to reach the summit just as the first rays of light paint the MacGillycuddy's Reeks in golden hues. This is a challenging hike suitable for those with mountain hiking experience.",
-    date: 'Saturday, January 11, 2025',
-    time: '5:30 AM',
-    meetingPoint: 'Dublin Heuston Station, Platform 4',
-    location: 'Carrauntoohil, County Kerry',
-    transport: 'Car (carpooling available)',
-    difficulty: 'T3',
-    distance: '14km',
-    elevation: '1040m',
-    duration: '6h',
-    maxParticipants: 12,
-    currentParticipants: 9,
-    status: 'organiser',
-    organizer: {
-      name: 'Jack',
-      rating: 4.9,
-      eventsOrganised: 12,
-    },
-    participants: [
-      { name: 'Sarah' },
-      { name: 'Marcus' },
-      { name: 'Elena' },
-      { name: 'Tom' },
-      { name: 'Lisa' },
-      { name: 'Alex' },
-      { name: 'Maria' },
-      { name: 'Ben' },
-      { name: 'Sophie' },
-    ],
-    requirements: [
-      'Good fitness level',
-      'Previous mountain hiking experience required',
-      'Headlamp required for early start',
-      'Waterproof layers essential'
-    ],
-    whatToBring: [
-      'Hiking boots with good ankle support',
-      'Headlamp with spare batteries',
-      'Waterproof jacket and trousers',
-      '2L water minimum',
-      'Snacks and packed breakfast',
-      'Warm hat and gloves',
-      'First aid kit',
-      'Trekking poles (recommended)'
-    ],
-    weather: {
-      condition: 'Partly cloudy',
-      temp: '4°C to 12°C',
-      wind: '20 km/h',
-      humidity: '75%'
-    },
-    route: {
-      highlights: [
-        'Spectacular sunrise views over Kerry',
-        "Summit of Ireland's highest peak (1,039m)",
-        'Views of the Lakes of Killarney',
-        'Wild Atlantic coastline visible on clear days'
-      ],
-      warnings: [
-        'Early start required - meet at 5:30 AM sharp',
-        'Summit can be very exposed and windy',
-        'Weather changes quickly - be prepared for rain'
-      ]
-    }
-  },
-  '2': {
-    id: '2',
-    title: 'Wicklow Way scenic trail',
-    description: 'A beautiful section of the famous Wicklow Way with stunning views of Glendalough and the surrounding valleys. Perfect for a day out with fellow hiking enthusiasts!',
-    date: 'Sunday, January 12, 2025',
-    time: '8:00 AM',
-    meetingPoint: 'Dublin Connolly Station, DART Platform',
-    location: 'Wicklow Mountains, County Wicklow',
-    transport: 'Bus',
-    difficulty: 'T2',
-    distance: '12km',
-    elevation: '450m',
-    duration: '4h',
-    maxParticipants: 15,
-    currentParticipants: 13,
-    status: 'going',
-    organizer: {
-      name: 'Lisa',
-      rating: 4.8,
-      eventsOrganised: 24,
-    },
-    participants: [
-      { name: 'Jack' },
-      { name: 'Emma' },
-      { name: 'David' },
-      { name: 'Anna' },
-      { name: 'Chris' },
-      { name: 'Julia' },
-      { name: 'Max' },
-      { name: 'Nina' },
-      { name: 'Felix' },
-      { name: 'Laura' },
-      { name: 'Tim' },
-      { name: 'Mia' },
-    ],
-    requirements: [
-      'Basic fitness level',
-      'Suitable for hiking beginners with guidance'
-    ],
-    whatToBring: [
-      'Comfortable hiking shoes',
-      'Waterproof jacket',
-      '1.5L water',
-      'Lunch and snacks',
-      'Small backpack'
-    ],
-    weather: {
-      condition: 'Partly cloudy',
-      temp: '8°C to 14°C',
-      wind: '15 km/h',
-      humidity: '70%'
-    },
-    route: {
-      highlights: [
-        'Views of Glendalough monastic site',
-        'Ancient oak woodlands',
-        'Cosy pub stop in Roundwood village'
-      ],
-      warnings: [
-        'Trail can be muddy after rain - wear waterproof boots'
-      ]
-    }
-  }
-};
-
 export default function EventDetail() {
   const navigate = useNavigate();
   const { id } = useParams();
   
-  const event = mockEvents[id || '1'];
+  const { data: event, isLoading, error } = useEventById(id);
+  const emptyState = getEmptyStateCopy('eventDetail');
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        <Header />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="animate-pulse text-muted-foreground">Loading event...</div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
   
-  if (!event) {
+  // Error / Not found state
+  if (error || !event) {
     return (
       <div className="min-h-screen bg-background flex flex-col">
         <Header />
         <main className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-foreground mb-2">Event not found</h1>
-            <p className="text-muted-foreground mb-4">This event doesn't exist or has been removed.</p>
+            <h1 className="text-2xl font-bold text-foreground mb-2">{emptyState.title}</h1>
+            <p className="text-muted-foreground mb-4">{emptyState.message}</p>
             <Button onClick={() => navigate('/events')}>Back to Events</Button>
           </div>
         </main>
@@ -319,7 +163,7 @@ export default function EventDetail() {
                 <div className="flex items-center justify-center gap-1 text-primary mb-1">
                   <Mountain className="w-4 h-4" />
                 </div>
-                <p className="text-lg font-bold text-foreground">Hiking</p>
+                <p className="text-lg font-bold text-foreground">{event.activity}</p>
                 <p className="text-xs text-muted-foreground">Activity</p>
               </div>
               <div className="text-center">
@@ -365,43 +209,47 @@ export default function EventDetail() {
           </Card>
 
           {/* Weather */}
-          <Card className="p-4 mb-6">
-            <h2 className="font-semibold text-foreground mb-3">Weather Forecast</h2>
-            <div className="flex items-center justify-around">
-              <div className="text-center">
-                <Sun className="w-5 h-5 text-amber-500 mx-auto mb-1" />
-                <p className="text-sm font-medium text-foreground">{event.weather.condition}</p>
+          {event.weather && (
+            <Card className="p-4 mb-6">
+              <h2 className="font-semibold text-foreground mb-3">Weather Forecast</h2>
+              <div className="flex items-center justify-around">
+                <div className="text-center">
+                  <Sun className="w-5 h-5 text-amber-500 mx-auto mb-1" />
+                  <p className="text-sm font-medium text-foreground">{event.weather.condition}</p>
+                </div>
+                <div className="text-center">
+                  <Thermometer className="w-5 h-5 text-rose-500 mx-auto mb-1" />
+                  <p className="text-sm font-medium text-foreground">{event.weather.temp}</p>
+                </div>
+                <div className="text-center">
+                  <Wind className="w-5 h-5 text-sky-500 mx-auto mb-1" />
+                  <p className="text-sm font-medium text-foreground">{event.weather.wind}</p>
+                </div>
+                <div className="text-center">
+                  <Droplets className="w-5 h-5 text-blue-500 mx-auto mb-1" />
+                  <p className="text-sm font-medium text-foreground">{event.weather.humidity}</p>
+                </div>
               </div>
-              <div className="text-center">
-                <Thermometer className="w-5 h-5 text-rose-500 mx-auto mb-1" />
-                <p className="text-sm font-medium text-foreground">{event.weather.temp}</p>
-              </div>
-              <div className="text-center">
-                <Wind className="w-5 h-5 text-sky-500 mx-auto mb-1" />
-                <p className="text-sm font-medium text-foreground">{event.weather.wind}</p>
-              </div>
-              <div className="text-center">
-                <Droplets className="w-5 h-5 text-blue-500 mx-auto mb-1" />
-                <p className="text-sm font-medium text-foreground">{event.weather.humidity}</p>
-              </div>
-            </div>
-          </Card>
+            </Card>
+          )}
 
           {/* Highlights */}
-          <div className="mb-6">
-            <h2 className="font-semibold text-foreground mb-3">Highlights</h2>
-            <div className="space-y-2">
-              {event.route.highlights.map((highlight, idx) => (
-                <div key={idx} className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm text-muted-foreground">{highlight}</span>
-                </div>
-              ))}
+          {event.route && event.route.highlights.length > 0 && (
+            <div className="mb-6">
+              <h2 className="font-semibold text-foreground mb-3">Highlights</h2>
+              <div className="space-y-2">
+                {event.route.highlights.map((highlight, idx) => (
+                  <div key={idx} className="flex items-start gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span className="text-sm text-muted-foreground">{highlight}</span>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Warnings */}
-          {event.route.warnings.length > 0 && (
+          {event.route && event.route.warnings.length > 0 && (
             <Card className="p-4 mb-6 bg-amber-500/10 border-amber-500/20">
               <h2 className="font-semibold text-foreground mb-3 flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 text-amber-500" />

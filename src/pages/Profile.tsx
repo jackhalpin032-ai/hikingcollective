@@ -1,9 +1,8 @@
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useProfile } from '@/hooks/useProfile';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import DifficultyBadge from '@/components/profile/DifficultyBadge';
@@ -14,6 +13,15 @@ import HikingBuddies from '@/components/profile/HikingBuddies';
 import FavoriteTrails from '@/components/profile/FavoriteTrails';
 import RecentActivityFeed from '@/components/profile/RecentActivityFeed';
 import jackPhoto from '@/assets/jack-profile.jpeg';
+import {
+  mockProfile,
+  mockReviews,
+  mockHikingBuddies,
+  mockFavoriteTrails,
+  mockRecentActivity,
+  mockActivities,
+} from '@/data/mockProfile';
+import { getEmptyStateCopy } from '@/lib/emptyStates';
 import { 
   Settings, 
   Mountain,
@@ -21,192 +29,15 @@ import {
   ChevronRight,
   Leaf,
   Calendar,
-  Route as RouteIcon,
-  Bike,
   Users,
   Sparkles,
   TrendingUp
 } from 'lucide-react';
 
-// Mock data for Jack's enhanced profile
-const jackProfile = {
-  displayName: 'Jack',
-  age: 30,
-  location: { city: 'Dublin', country: 'Ireland' },
-  experienceLevel: 'intermediate' as const,
-  bio: 'Outdoor enthusiast who loves exploring the Wicklow Mountains and wild Atlantic coastline. Always up for a challenging hike or a relaxed nature walk with good company!',
-  stats: {
-    yearsHiking: 3,
-    eventsOrganised: 12,
-    hikesCompleted: 45,
-    cyclingActivities: 8,
-    routesCreated: 18,
-    viaFerrataActivities: 6,
-  },
-  allTimeStats: {
-    hiking: 45,
-    cycling: 8,
-    climbing: 3,
-    viaFerrata: 6,
-  },
-  reviews: 28,
-  totalDistance: '289km',
-  totalElevation: '24,560m',
-  difficultyBreakdown: {
-    T1: 2,
-    T2: 28,
-    T3: 18,
-    T4: 5,
-    T5: 12,
-    T6: 2,
-  },
-  interests: ['Hiking', 'Photography', 'Camping', 'Trail Running'],
-  sustainableTravel: true,
-};
-
-const reviews = [
-  {
-    content: "Jack is an amazing organiser! The hike was well planned and he made sure everyone was comfortable throughout.",
-    reviewerName: "Sarah",
-    eventName: "Carrauntoohil Summit",
-    date: "Nov 2024"
-  },
-  {
-    content: "Great energy and really knows the trails. Would definitely join his events again!",
-    reviewerName: "Marcus",
-    eventName: "Glendalough Valley",
-    date: "Oct 2024"
-  },
-  {
-    content: "Jack kept the pace perfect for everyone. Really inclusive and fun experience!",
-    reviewerName: "Elena",
-    eventName: "Bray to Greystones",
-    date: "Sep 2024"
-  }
-];
-
-const hikingBuddies = [
-  {
-    name: "Aoife",
-    photo: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face",
-    hikesTogther: 12,
-    lastHike: "2 days ago"
-  },
-  {
-    name: "Ciaran",
-    photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
-    hikesTogther: 8,
-    lastHike: "1 week ago"
-  },
-  {
-    name: "Sinead",
-    photo: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face",
-    hikesTogther: 6,
-    lastHike: "2 weeks ago"
-  },
-];
-
-const favoriteTrails = [
-  {
-    name: "Glendalough",
-    location: "Wicklow",
-    timesHiked: 8,
-    image: "https://images.unsplash.com/photo-1551632811-561732d1e306?w=300&h=200&fit=crop"
-  },
-  {
-    name: "Howth Cliff",
-    location: "Dublin",
-    timesHiked: 12,
-    image: "https://images.unsplash.com/photo-1501555088652-021faa106b9b?w=300&h=200&fit=crop"
-  },
-  {
-    name: "Carrauntoohil",
-    location: "Kerry",
-    timesHiked: 3,
-    image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=300&h=200&fit=crop"
-  },
-  {
-    name: "Croagh Patrick",
-    location: "Mayo",
-    timesHiked: 2,
-    image: "https://images.unsplash.com/photo-1522163182402-834f871fd851?w=300&h=200&fit=crop"
-  },
-];
-
-const recentActivity = [
-  {
-    type: 'hike' as const,
-    title: "Completed Bray to Greystones cliff walk",
-    description: "7km coastal trail with stunning sea views",
-    timeAgo: "2 days ago",
-    image: "https://images.unsplash.com/photo-1501555088652-021faa106b9b?w=100&h=100&fit=crop",
-    participants: [
-      { name: "Aoife", photo: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face" },
-      { name: "Ciaran", photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face" },
-      { name: "Emma" },
-    ]
-  },
-  {
-    type: 'group' as const,
-    title: "Joined Wicklow Hikers group",
-    description: "Now part of a community of 234 local hikers",
-    timeAgo: "5 days ago",
-  },
-  {
-    type: 'achievement' as const,
-    title: "Earned 'Peak Bagger' badge",
-    description: "Completed 10 summit hikes in Ireland",
-    timeAgo: "1 week ago",
-  },
-  {
-    type: 'photo' as const,
-    title: "Shared 5 photos from Glendalough",
-    description: "Your photos got 23 likes from the community",
-    timeAgo: "1 week ago",
-    image: "https://images.unsplash.com/photo-1551632811-561732d1e306?w=100&h=100&fit=crop"
-  },
-  {
-    type: 'review' as const,
-    title: "Left a review for Sarah",
-    description: "Rated 5 stars for the Wicklow Way hike",
-    timeAgo: "2 weeks ago",
-  },
-];
-
-const activities = [
-  {
-    id: '1',
-    organizer: { name: "Jack", additionalCount: 8 },
-    title: "Carrauntoohil sunrise hike",
-    time: "5:30",
-    location: "Dublin",
-    transport: "Car",
-    difficulty: "T3",
-    distance: "14km",
-    elevation: "1040m",
-    duration: "6h",
-    status: 'organiser' as const,
-  },
-  {
-    id: '2',
-    organizer: { name: "Lisa", additionalCount: 12 },
-    title: "Wicklow Way scenic trail",
-    time: "8:00",
-    location: "Dublin",
-    transport: "Bus",
-    difficulty: "T2",
-    distance: "12km",
-    elevation: "450m",
-    duration: "4h",
-    status: 'going' as const,
-  },
-];
-
 export default function Profile() {
   const navigate = useNavigate();
-  const { profile, isLoading, hasProfile } = useProfile();
+  const { profile, isLoading } = useProfile();
   const [activeTab, setActiveTab] = useState<'activity' | 'upcoming' | 'past' | 'organised'>('activity');
-
 
   if (isLoading) {
     return (
@@ -216,7 +47,15 @@ export default function Profile() {
     );
   }
 
-  const displayProfile = jackProfile;
+  // Use real profile data if available, otherwise fall back to mock
+  const displayProfile = profile?.displayName ? {
+    ...mockProfile,
+    displayName: profile.displayName,
+    bio: profile.bio || mockProfile.bio,
+    location: profile.location.city ? profile.location : mockProfile.location,
+    experienceLevel: profile.experienceLevel || mockProfile.experienceLevel,
+    interests: profile.interests.length > 0 ? profile.interests : mockProfile.interests,
+  } : mockProfile;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-muted/30 to-background flex flex-col">
@@ -245,7 +84,7 @@ export default function Profile() {
                 <div className="flex items-start gap-4 mb-4">
                   <div className="relative">
                     <img 
-                      src={jackPhoto}
+                      src={profile?.photoUrl || jackPhoto}
                       alt={displayProfile.displayName}
                       className="w-20 h-20 lg:w-24 lg:h-24 rounded-full object-cover border-4 border-background shadow-xl"
                     />
@@ -267,7 +106,7 @@ export default function Profile() {
                     </div>
                     <p className="text-sm text-muted-foreground flex items-center gap-1 mb-2">
                       <span className="text-base">🇮🇪</span>
-                      Dublin, Ireland
+                      {displayProfile.location.city}, {displayProfile.location.country}
                     </p>
                     <div className="flex items-center gap-3 text-xs lg:text-sm">
                       <span className="text-muted-foreground">
@@ -296,7 +135,7 @@ export default function Profile() {
                   </Badge>
                   <Badge variant="secondary" className="bg-amber-500/10 text-amber-600 border-0 px-3 py-1 text-xs font-medium">
                     <Users className="w-3 h-3 mr-1.5" />
-                    Hiked with {hikingBuddies.reduce((acc, b) => acc + b.hikesTogther, 0)} people
+                    Hiked with {mockHikingBuddies.reduce((acc, b) => acc + b.hikesTogther, 0)} people
                   </Badge>
                   <Badge variant="secondary" className="bg-violet-500/10 text-violet-600 border-0 px-3 py-1 text-xs font-medium">
                     <Sparkles className="w-3 h-3 mr-1.5" />
@@ -351,7 +190,7 @@ export default function Profile() {
 
               {/* Hiking Buddies - Desktop sidebar */}
               <div className="mb-6 mt-6">
-                <HikingBuddies buddies={hikingBuddies} onViewAll={() => {}} />
+                <HikingBuddies buddies={mockHikingBuddies} onViewAll={() => {}} />
               </div>
 
               {/* Difficulty Breakdown - Desktop sidebar */}
@@ -369,7 +208,7 @@ export default function Profile() {
             <div className="lg:pt-0 pt-6">
               {/* Favorite Trails Section */}
               <div className="mb-6">
-                <FavoriteTrails trails={favoriteTrails} onViewAll={() => {}} />
+                <FavoriteTrails trails={mockFavoriteTrails} onViewAll={() => {}} />
               </div>
 
               {/* Activity/Content Tabs */}
@@ -421,13 +260,13 @@ export default function Profile() {
                 {/* Tab Content */}
                 {activeTab === 'activity' && (
                   <div className="animate-fade-in">
-                    <RecentActivityFeed activities={recentActivity} />
+                    <RecentActivityFeed activities={mockRecentActivity} />
                   </div>
                 )}
 
                 {activeTab === 'upcoming' && (
                   <div className="space-y-4 animate-fade-in">
-                    {activities.map((activity, idx) => (
+                    {mockActivities.map((activity, idx) => (
                       <ActivityCard key={idx} {...activity} />
                     ))}
                   </div>
@@ -437,15 +276,15 @@ export default function Profile() {
                   <div className="space-y-4 animate-fade-in">
                     <div className="text-center py-8 text-muted-foreground">
                       <Mountain className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                      <p className="font-medium">45 past hikes</p>
-                      <p className="text-sm">View Jack's hiking history</p>
+                      <p className="font-medium">{displayProfile.stats.hikesCompleted} past hikes</p>
+                      <p className="text-sm">View {displayProfile.displayName}'s hiking history</p>
                     </div>
                   </div>
                 )}
 
                 {activeTab === 'organised' && (
                   <div className="space-y-4 animate-fade-in">
-                    {activities.filter(a => a.status === 'organiser').map((activity, idx) => (
+                    {mockActivities.filter(a => a.status === 'organiser').map((activity, idx) => (
                       <ActivityCard key={idx} {...activity} />
                     ))}
                   </div>
@@ -464,7 +303,7 @@ export default function Profile() {
                   </button>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {reviews.map((review, idx) => (
+                  {mockReviews.map((review, idx) => (
                     <ReviewCard key={idx} {...review} />
                   ))}
                 </div>

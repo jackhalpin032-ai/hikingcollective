@@ -1,20 +1,6 @@
-export interface HikingRoute {
-  id: string;
-  name: string;
-  thumbnail: string;
-  distance: number; // in km
-  duration: number; // in minutes
-  difficulty: 'easy' | 'moderate' | 'hard';
-  technicality: 'T1' | 'T2' | 'T3' | 'T4' | 'T5' | 'T6';
-  highlights: string[];
-  features: string[];
-  facilities: string[];
-  accessibility: string[];
-  routeType: 'loop' | 'out-back' | 'point-to-point';
-  season: 'summer' | 'winter' | 'all-year';
-  location: string;
-  description: string;
-}
+import type { HikingRoute, RouteFilterOptions } from '@/types/route';
+
+export type { HikingRoute } from '@/types/route';
 
 export const irishRoutes: HikingRoute[] = [
   {
@@ -223,7 +209,7 @@ export const irishRoutes: HikingRoute[] = [
   }
 ];
 
-export const filterOptions = {
+export const filterOptions: RouteFilterOptions = {
   difficulty: ['easy', 'moderate', 'hard'] as const,
   technicality: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6'] as const,
   duration: [
@@ -239,3 +225,8 @@ export const filterOptions = {
   routeType: ['loop', 'out-back', 'point-to-point'] as const,
   season: ['summer', 'winter', 'all-year'] as const
 };
+
+// Helper to get route by ID
+export function getRouteById(id: string): HikingRoute | undefined {
+  return irishRoutes.find(route => route.id === id);
+}
