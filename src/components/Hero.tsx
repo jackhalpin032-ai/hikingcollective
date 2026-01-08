@@ -37,14 +37,14 @@ const Hero = () => {
               <p className="text-muted-foreground text-lg md:text-xl leading-relaxed max-w-lg mx-auto md:mx-0 mb-8">
                 The Hiking Collective is a non-profit community of outdoor and sport lovers. Join an upcoming hiking, climbing, cycling - you name it - event or organise your own!
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-                <Button size="lg" className="rounded-full px-8" asChild>
+              <div className="flex flex-col sm:flex-row flex-wrap gap-3 justify-center md:justify-start w-full">
+                <Button size="lg" className="rounded-full px-6 sm:px-8" asChild>
                   <Link to="/events">
                     Browse Events
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Link>
                 </Button>
-                <Button variant="outline" size="lg" className="rounded-full px-8" asChild>
+                <Button variant="outline" size="lg" className="rounded-full px-6 sm:px-8" asChild>
                   <Link to="/routes">
                     Explore Routes
                   </Link>
