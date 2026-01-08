@@ -24,8 +24,17 @@ export default function ProfileEdit() {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
-    if (!isLoading && profile) {
-      setFormData(profile);
+    if (!isLoading) {
+      setFormData(profile || {
+        displayName: '',
+        location: { city: '', country: '' },
+        bio: '',
+        experienceLevel: 'beginner',
+        pace: 'moderate',
+        interests: [],
+        preferredHikeTypes: [],
+        isPublic: true,
+      });
     }
   }, [isLoading, profile]);
 
@@ -72,7 +81,7 @@ export default function ProfileEdit() {
     navigate('/profile');
   };
 
-  if (isLoading || !formData.displayName) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="animate-pulse text-muted-foreground">Loading...</div>
