@@ -8,15 +8,15 @@ const Hero = () => {
     <section className="relative min-h-[85vh] flex items-center overflow-hidden">
       <Vortex
         backgroundColor="hsl(var(--background))"
-        baseHue={142}
-        rangeHue={60}
-        particleCount={500}
-        baseSpeed={0.1}
-        rangeSpeed={1.0}
-        baseRadius={1}
-        rangeRadius={2}
-        rangeY={200}
-        containerClassName="absolute inset-0"
+        baseHue={160}
+        rangeHue={20}
+        particleCount={200}
+        baseSpeed={0.05}
+        rangeSpeed={0.3}
+        baseRadius={0.5}
+        rangeRadius={1}
+        rangeY={300}
+        containerClassName="absolute inset-0 opacity-40"
         className="flex items-center justify-center h-full w-full"
       >
         <div className="container max-w-6xl mx-auto px-6 py-16 md:py-24">
