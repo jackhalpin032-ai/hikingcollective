@@ -47,9 +47,9 @@ const Header = () => {
           <Link to="/events" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
             Events
           </Link>
-          <a href="#routes" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+          <Link to="/routes" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
             Routes
-          </a>
+          </Link>
           <a href="#community" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
             Community
           </a>
@@ -103,7 +103,7 @@ const Header = () => {
                       </AvatarFallback>
                     </Avatar>
                     <span className="hidden md:block text-sm font-medium text-foreground">
-                      Jack
+                      {hasProfile && profile?.displayName ? profile.displayName : 'Guest'}
                     </span>
                     <ChevronDown className="h-4 w-4 text-muted-foreground hidden md:block" />
                   </Button>
