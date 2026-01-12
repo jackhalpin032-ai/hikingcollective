@@ -11,6 +11,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource/adamina": "^5.2.7",
+    "@fontsource/alata": "^5.2.8",
+    "@fontsource/cousine": "^5.2.7",
     "@fontsource/mulish": "^5.2.8",
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "^1.2.11",
