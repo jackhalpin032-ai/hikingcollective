@@ -1,7 +1,32 @@
 import { useState, useEffect } from 'react';
+import { z } from 'zod';
 import { UserProfile } from '@/types/profile';
 
 const STORAGE_KEY = 'hiking_collective_profile';
+
+// Zod schema for validating localStorage data
+const UserProfileSchema = z.object({
+  id: z.string(),
+  displayName: z.string(),
+  photoUrl: z.string().optional(),
+  location: z.object({
+    city: z.string(),
+    country: z.string()
+  }),
+  interests: z.array(z.string()),
+  experienceLevel: z.enum(['beginner', 'intermediate', 'advanced']),
+  preferredHikeTypes: z.array(z.string()),
+  pace: z.enum(['slow', 'moderate', 'fast']),
+  bio: z.string(),
+  isPublic: z.boolean(),
+  stats: z.object({
+    eventsJoined: z.number(),
+    routesCompleted: z.number(),
+    followers: z.number(),
+    following: z.number()
+  }),
+  createdAt: z.string()
+});
 
 const generateId = () => {
   // Avoid direct `crypto.randomUUID()` at module init; it's not supported everywhere.
@@ -35,52 +60,81 @@ const createDefaultProfile = (): UserProfile => ({
   createdAt: new Date().toISOString()
 });
 
+const createJackProfile = (): UserProfile => ({
+  id: generateId(),
+  displayName: 'Jack',
+  photoUrl: undefined,
+  location: { city: 'Dublin', country: 'Ireland' },
+  interests: ['Hiking', 'Nature', 'Photography'],
+  experienceLevel: 'intermediate',
+  preferredHikeTypes: ['Mountain', 'Coastal'],
+  pace: 'moderate',
+  bio: 'Passionate about exploring the Irish wilderness and connecting with fellow outdoor enthusiasts.',
+  isPublic: true,
+  stats: {
+    eventsJoined: 47,
+    routesCompleted: 32,
+    followers: 156,
+    following: 89
+  },
+  createdAt: new Date().toISOString()
+});
+
 export function useProfile() {
-  const [profile, setProfile] = useState<UserProfile | null>(null);
+const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
-      setProfile(JSON.parse(stored));
+      try {
+        const parsed = JSON.parse(stored);
+        const validated = UserProfileSchema.parse(parsed) as UserProfile;
+        setProfile(validated);
+      } catch (error) {
+        console.error('Invalid profile data in localStorage, resetting to default');
+        localStorage.removeItem(STORAGE_KEY);
+        setProfile(createJackProfile());
+      }
     } else {
       // Pre-populate with Jack's default profile for demo
-      const jackProfile: UserProfile = {
-        id: generateId(),
-        displayName: 'Jack',
-        photoUrl: undefined,
-        location: { city: 'Dublin', country: 'Ireland' },
-        interests: ['Hiking', 'Nature', 'Photography'],
-        experienceLevel: 'intermediate',
-        preferredHikeTypes: ['Mountain', 'Coastal'],
-        pace: 'moderate',
-        bio: 'Passionate about exploring the Irish wilderness and connecting with fellow outdoor enthusiasts.',
-        isPublic: true,
-        stats: {
-          eventsJoined: 47,
-          routesCompleted: 32,
-          followers: 156,
-          following: 89
-        },
-        createdAt: new Date().toISOString()
-      };
-      setProfile(jackProfile);
+      setProfile(createJackProfile());
     }
     setIsLoading(false);
   }, []);
 
-  const saveProfile = (data: Partial<UserProfile>) => {
-    const updated = { ...(profile || createDefaultProfile()), ...data };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-    setProfile(updated);
-    return updated;
+  const saveProfile = (data: Partial<UserProfile>): UserProfile | null => {
+    const base = profile || createDefaultProfile();
+    const updated: UserProfile = {
+      ...base,
+      ...data,
+      location: { ...base.location, ...(data.location || {}) },
+      stats: { ...base.stats, ...(data.stats || {}) }
+    };
+    // Validate before saving
+    try {
+      UserProfileSchema.parse(updated);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      setProfile(updated);
+      return updated;
+    } catch (error) {
+      console.error('Invalid profile data, not saving');
+      return profile;
+    }
   };
 
   const createProfile = (data: Partial<UserProfile>) => {
     const newProfile = { ...createDefaultProfile(), ...data, createdAt: new Date().toISOString() };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(newProfile));
-    setProfile(newProfile);
-    return newProfile;
+    // Validate before saving
+    try {
+      UserProfileSchema.parse(newProfile);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(newProfile));
+      setProfile(newProfile);
+      return newProfile;
+    } catch (error) {
+      console.error('Invalid profile data, not creating');
+      return null;
+    }
   };
 
   const hasProfile = !!profile?.displayName;
