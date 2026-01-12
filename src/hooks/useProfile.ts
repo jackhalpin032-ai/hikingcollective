@@ -43,6 +43,28 @@ export function useProfile() {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       setProfile(JSON.parse(stored));
+    } else {
+      // Pre-populate with Jack's default profile for demo
+      const jackProfile: UserProfile = {
+        id: generateId(),
+        displayName: 'Jack',
+        photoUrl: undefined,
+        location: { city: 'Dublin', country: 'Ireland' },
+        interests: ['Hiking', 'Nature', 'Photography'],
+        experienceLevel: 'intermediate',
+        preferredHikeTypes: ['Mountain', 'Coastal'],
+        pace: 'moderate',
+        bio: 'Passionate about exploring the Irish wilderness and connecting with fellow outdoor enthusiasts.',
+        isPublic: true,
+        stats: {
+          eventsJoined: 47,
+          routesCompleted: 32,
+          followers: 156,
+          following: 89
+        },
+        createdAt: new Date().toISOString()
+      };
+      setProfile(jackProfile);
     }
     setIsLoading(false);
   }, []);
