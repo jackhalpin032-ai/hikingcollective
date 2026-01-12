@@ -3,13 +3,11 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card } from '@/components/ui/card';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
+import DetailViewLayout from '@/components/DetailViewLayout';
 import DifficultyBadge from '@/components/profile/DifficultyBadge';
 import { useEventById } from '@/hooks/useEventById';
 import { getEmptyStateCopy } from '@/lib/emptyStates';
 import { 
-  ArrowLeft,
   Calendar,
   Clock,
   MapPin,
@@ -18,9 +16,7 @@ import {
   ArrowLeftRight,
   TrendingUp,
   Users,
-  Share2,
   MessageCircle,
-  Heart,
   Sun,
   Thermometer,
   Wind,
@@ -36,65 +32,64 @@ export default function EventDetail() {
   const { data: event, isLoading, error } = useEventById(id);
   const emptyState = getEmptyStateCopy('eventDetail');
 
-  // Loading state
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col">
-        <Header />
-        <main className="flex-1 flex items-center justify-center">
-          <div className="animate-pulse text-muted-foreground">Loading event...</div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-  
-  // Error / Not found state
-  if (error || !event) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col">
-        <Header />
-        <main className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-foreground mb-2">{emptyState.title}</h1>
-            <p className="text-muted-foreground mb-4">{emptyState.message}</p>
-            <Button onClick={() => navigate('/events')}>Back to Events</Button>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
+  const notFoundContent = (
+    <div className="text-center">
+      <h1 className="text-2xl font-bold text-foreground mb-2">{emptyState.title}</h1>
+      <p className="text-muted-foreground mb-4">{emptyState.message}</p>
+      <Button onClick={() => navigate('/events')}>Back to Events</Button>
+    </div>
+  );
 
-  const spotsLeft = event.maxParticipants - event.currentParticipants;
+  const spotsLeft = event ? event.maxParticipants - event.currentParticipants : 0;
+
+  const bottomActions = event && (
+    <>
+      {event.status === 'going' ? (
+        <>
+          <Button variant="outline" className="flex-1 text-destructive border-destructive hover:bg-destructive/10">
+            Unjoin Event
+          </Button>
+          <Button className="flex-1">
+            <MessageCircle className="w-4 h-4 mr-2" />
+            Message Group
+          </Button>
+        </>
+      ) : event.status === 'organiser' ? (
+        <>
+          <Button variant="outline" className="flex-1">
+            Edit Event
+          </Button>
+          <Button className="flex-1">
+            <MessageCircle className="w-4 h-4 mr-2" />
+            Message Group
+          </Button>
+        </>
+      ) : (
+        <>
+          <Button variant="outline" className="flex-1">
+            <MessageCircle className="w-4 h-4 mr-2" />
+            Ask Question
+          </Button>
+          <Button className="flex-1">
+            Join Event
+          </Button>
+        </>
+      )}
+    </>
+  );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-muted/30 to-background flex flex-col">
-      <Header />
-      
-      <main className="flex-1 pb-24">
-        {/* Back button & Header */}
-        <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border/50">
-          <div className="max-w-2xl mx-auto px-4 py-3 flex items-center gap-3">
-            <button 
-              onClick={() => navigate(-1)}
-              className="p-2 -ml-2 rounded-full hover:bg-muted transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </button>
-            <div className="flex-1">
-              <h1 className="font-semibold text-foreground truncate">{event.title}</h1>
-            </div>
-            <Button variant="ghost" size="icon" className="text-muted-foreground">
-              <Heart className="w-5 h-5" />
-            </Button>
-            <Button variant="ghost" size="icon" className="text-muted-foreground">
-              <Share2 className="w-5 h-5" />
-            </Button>
-          </div>
-        </div>
-
-        <div className="max-w-2xl mx-auto px-4 pt-6">
+    <DetailViewLayout
+      title={event?.title || 'Event'}
+      isLoading={isLoading}
+      loadingMessage="Loading event..."
+      notFound={!!error || !event}
+      notFoundContent={notFoundContent}
+      bottomActions={bottomActions}
+      onBack={() => navigate('/events')}
+    >
+      {event && (
+        <>
           {/* Title & Status */}
           <div className="mb-6">
             <div className="flex items-start justify-between gap-4 mb-3">
@@ -347,47 +342,8 @@ export default function EventDetail() {
             </div>
             <p className="text-sm text-muted-foreground">Join the conversation with other participants...</p>
           </Card>
-        </div>
-      </main>
-
-      {/* Fixed Bottom Action */}
-      <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border p-4">
-        <div className="max-w-2xl mx-auto flex gap-3">
-          {event.status === 'going' ? (
-            <>
-              <Button variant="outline" className="flex-1 text-destructive border-destructive hover:bg-destructive/10">
-                Unjoin Event
-              </Button>
-              <Button className="flex-1">
-                <MessageCircle className="w-4 h-4 mr-2" />
-                Message Group
-              </Button>
-            </>
-          ) : event.status === 'organiser' ? (
-            <>
-              <Button variant="outline" className="flex-1">
-                Edit Event
-              </Button>
-              <Button className="flex-1">
-                <MessageCircle className="w-4 h-4 mr-2" />
-                Message Group
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button variant="outline" className="flex-1">
-                <MessageCircle className="w-4 h-4 mr-2" />
-                Ask Question
-              </Button>
-              <Button className="flex-1">
-                Join Event
-              </Button>
-            </>
-          )}
-        </div>
-      </div>
-
-      <Footer />
-    </div>
+        </>
+      )}
+    </DetailViewLayout>
   );
 }
