@@ -12,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { ThemeToggle } from "./ThemeToggle";
 import jackPhoto from "@/assets/jack-profile.jpeg";
 
 const Header = () => {
@@ -89,6 +90,8 @@ const Header = () => {
               >
                 <Search className="h-5 w-5 text-muted-foreground" />
               </button>
+              
+              <ThemeToggle />
               
               {/* Profile Dropdown */}
               <DropdownMenu>
