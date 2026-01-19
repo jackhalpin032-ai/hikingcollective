@@ -13,13 +13,16 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { ThemeToggle } from "./ThemeToggle";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { useLanguage } from "@/i18n/LanguageContext";
 import jackPhoto from "@/assets/jack-profile.jpeg";
 
 const Header = () => {
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
-  const { profile, hasProfile } = useProfile();
+  const { profile } = useProfile();
+  const { t } = useLanguage();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,33 +46,33 @@ const Header = () => {
             </svg>
           </div>
           <span className="text-lg font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
-            The Hiking Collective
+            {t.brandName}
           </span>
         </Link>
 
         {/* Navigation */}
         <nav className="hidden md:flex items-center gap-6">
           <Link to="/events" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
-            Events
+            {t.nav.events}
           </Link>
           <Link to="/routes" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
-            Routes
+            {t.nav.routes}
           </Link>
           <a href="#community" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
-            Community
+            {t.nav.community}
           </a>
           <Button variant="outline" size="sm" className="font-semibold" asChild>
-            <Link to="/events">Create event</Link>
+            <Link to="/events">{t.nav.createEvent}</Link>
           </Button>
         </nav>
 
         {/* Right side - Search & Profile */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           {showSearch ? (
             <form onSubmit={handleSearch} className="flex items-center gap-2">
               <Input
                 type="text"
-                placeholder="Search events..."
+                placeholder={t.nav.searchPlaceholder}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-48 md:w-64 h-9"
@@ -95,6 +98,7 @@ const Header = () => {
                 <Search className="h-5 w-5 text-muted-foreground" />
               </button>
               
+              <LanguageSwitcher />
               <ThemeToggle />
               
               {/* Profile Dropdown */}
@@ -113,24 +117,24 @@ const Header = () => {
                     <ChevronDown className="h-4 w-4 text-muted-foreground hidden md:block" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuContent align="end" className="w-48 bg-popover">
                   <DropdownMenuItem onClick={() => navigate('/profile')} className="cursor-pointer">
                     <User className="mr-2 h-4 w-4" />
-                    My Profile
+                    {t.nav.myProfile}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate('/profile/edit')} className="cursor-pointer">
-                    Edit Profile
+                    {t.nav.editProfile}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => navigate('/events')} className="cursor-pointer">
-                    My Events
+                    {t.nav.myEvents}
                   </DropdownMenuItem>
                   <DropdownMenuItem className="cursor-pointer">
-                    Saved Routes
+                    {t.nav.savedRoutes}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem className="cursor-pointer text-muted-foreground">
-                    Sign out
+                    {t.nav.signOut}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

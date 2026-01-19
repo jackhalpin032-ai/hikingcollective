@@ -1,4 +1,8 @@
+import { useLanguage } from "@/i18n/LanguageContext";
+
 const Footer = () => {
+  const { t } = useLanguage();
+
   return (
     <footer className="py-8 border-t border-border">
       <div className="container">
@@ -12,31 +16,31 @@ const Footer = () => {
                 <circle cx="18" cy="5" r="3" fill="hsl(var(--warning))" />
               </svg>
             </div>
-            <span className="text-lg font-bold tracking-tight text-foreground">The Hiking Collective</span>
+            <span className="text-lg font-bold tracking-tight text-foreground">{t.brandName}</span>
           </a>
 
           {/* Links */}
           <nav className="flex flex-wrap items-center justify-center gap-4 md:gap-6 text-sm text-muted-foreground">
             <a href="#" className="hover:text-foreground transition-colors">
-              Imprint
+              {t.footer.imprint}
             </a>
             <a href="#" className="hover:text-foreground transition-colors">
-              About
+              {t.footer.about}
             </a>
             <a href="#" className="hover:text-foreground transition-colors">
-              Privacy
+              {t.footer.privacy}
             </a>
             <a href="#" className="hover:text-foreground transition-colors">
-              Terms
+              {t.footer.terms}
             </a>
             <a href="#" className="hover:text-foreground transition-colors">
-              Contact
+              {t.footer.contact}
             </a>
           </nav>
 
           {/* Copyright */}
           <p className="text-sm text-muted-foreground">
-            © 2026 The Hiking Collective
+            {t.footer.copyright}
           </p>
         </div>
       </div>
