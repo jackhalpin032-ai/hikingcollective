@@ -14,7 +14,12 @@ import {
   Compass,
   ChevronRight,
   CheckCircle2,
-  Mountain
+  Mountain,
+  ArrowUp,
+  ArrowDown,
+  Clock,
+  Star,
+  Users
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -255,6 +260,43 @@ export default function RouteDetail() {
         onSeeAll={() => navigate('/events')}
       />
 
+      {/* Route Details Grid - inspired by reference */}
+      <div className="mb-6">
+        <h2 className="font-semibold text-foreground mb-4 text-lg">Route details</h2>
+        <div className="grid grid-cols-3 gap-3">
+          <Card className="p-4 text-center">
+            <MapPin className="w-5 h-5 mx-auto mb-2 text-muted-foreground" />
+            <p className="text-xs text-muted-foreground mb-1">Distance</p>
+            <p className="font-semibold text-foreground">{route.distance}km</p>
+          </Card>
+          <Card className="p-4 text-center">
+            <ArrowUp className="w-5 h-5 mx-auto mb-2 text-muted-foreground" />
+            <p className="text-xs text-muted-foreground mb-1">Ascent</p>
+            <p className="font-semibold text-foreground">{estimatedElevation}m</p>
+          </Card>
+          <Card className="p-4 text-center">
+            <ArrowDown className="w-5 h-5 mx-auto mb-2 text-muted-foreground" />
+            <p className="text-xs text-muted-foreground mb-1">Descent</p>
+            <p className="font-semibold text-foreground">{estimatedElevation}m</p>
+          </Card>
+          <Card className="p-4 text-center">
+            <Mountain className="w-5 h-5 mx-auto mb-2 text-muted-foreground" />
+            <p className="text-xs text-muted-foreground mb-1">Highest point</p>
+            <p className="font-semibold text-foreground">{Math.round(estimatedElevation * 1.5)}m</p>
+          </Card>
+          <Card className="p-4 text-center">
+            <Clock className="w-5 h-5 mx-auto mb-2 text-muted-foreground" />
+            <p className="text-xs text-muted-foreground mb-1">Duration</p>
+            <p className="font-semibold text-foreground">{formatDuration(route.duration)}</p>
+          </Card>
+          <Card className="p-4 text-center">
+            <Star className="w-5 h-5 mx-auto mb-2 text-muted-foreground" />
+            <p className="text-xs text-muted-foreground mb-1">Rating</p>
+            <p className="font-semibold text-foreground">4.5</p>
+          </Card>
+        </div>
+      </div>
+
       {/* Technical Details */}
       <Card className="p-4 mb-6">
         <h2 className="font-semibold text-foreground mb-4 flex items-center gap-2 uppercase text-xs tracking-wider text-muted-foreground">
@@ -412,14 +454,9 @@ export default function RouteDetail() {
         )}
       </div>
 
-      {/* Past Events on this Route */}
+      {/* Past Events on this Route - cleaner cards like reference */}
       <div className="mb-6">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="font-semibold text-foreground uppercase text-xs tracking-wider text-muted-foreground flex items-center gap-2">
-            <Calendar className="w-4 h-4" />
-            Past Events
-          </h2>
-        </div>
+        <h2 className="font-semibold text-foreground mb-4 text-lg">Past Events</h2>
         
         {pastEvents.length > 0 ? (
           <div className="space-y-3">
@@ -429,42 +466,34 @@ export default function RouteDetail() {
                 to={`/events/${event.id}`}
                 className="block"
               >
-                <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors">
-                  <img 
-                    src={event.image} 
-                    alt={event.title}
-                    className="w-14 h-14 rounded-lg object-cover flex-shrink-0"
-                  />
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-foreground truncate">{event.title}</p>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
-                      <span>{event.date}</span>
-                      <span>•</span>
-                      <span>{event.difficulty}</span>
-                    </div>
-                    <div className="flex items-center gap-1 mt-2">
-                      <div className="flex -space-x-2">
-                        {event.attendeeAvatars.slice(0, 3).map((avatar, idx) => (
-                          <Avatar key={idx} className="w-5 h-5 border border-background">
-                            <AvatarImage src={avatar} />
-                            <AvatarFallback className="text-[8px]">U</AvatarFallback>
-                          </Avatar>
-                        ))}
-                      </div>
-                      <span className="text-xs text-muted-foreground ml-1">
-                        {event.attendees} went
-                      </span>
-                    </div>
+                <Card className="p-4 hover:bg-muted/50 transition-colors">
+                  <p className="font-medium text-foreground mb-2">{event.title}</p>
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
+                    <span className="flex items-center gap-1.5">
+                      <Calendar className="w-3.5 h-3.5" />
+                      {event.date}
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <Users className="w-3.5 h-3.5" />
+                      {event.attendees}
+                    </span>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                </div>
+                  <div className="flex items-center gap-2">
+                    <Avatar className="w-6 h-6">
+                      <AvatarImage src={event.organizerAvatar} alt={event.organizer} />
+                      <AvatarFallback className="text-[10px]">{event.organizer.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <span className="text-sm text-muted-foreground">by {event.organizer}</span>
+                  </div>
+                </Card>
               </Link>
             ))}
           </div>
         ) : (
-          <div className="text-center py-4 text-muted-foreground">
+          <Card className="p-6 text-center text-muted-foreground">
+            <Calendar className="w-10 h-10 mx-auto mb-2 opacity-50" />
             <p className="text-sm">No past events yet</p>
-          </div>
+          </Card>
         )}
       </div>
 
