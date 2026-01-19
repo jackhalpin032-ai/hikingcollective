@@ -30,7 +30,7 @@ import StatsRow from '@/components/detail/StatsRow';
 import PhotoGallerySection from '@/components/detail/PhotoGallerySection';
 import { cn } from '@/lib/utils';
 import { irishRoutes } from '@/data/routes';
-import { eventRows } from '@/data/events';
+import { eventRows, pastEventRows } from '@/data/events';
 
 const technicalityColors: Record<string, string> = {
   T1: 'bg-emerald-500',
@@ -143,10 +143,10 @@ const mockEventPhotos = [
 
 // Get past events linked to this specific route
 function getPastEventsForRoute(routeId: string) {
-  const linkedEvents = eventRows.filter(event => event.routeId === routeId);
-  return linkedEvents.slice(0, 2).map((event, idx) => ({
+  const linkedEvents = pastEventRows.filter(event => event.routeId === routeId);
+  return linkedEvents.map((event, idx) => ({
     ...event,
-    date: idx === 0 ? '2 weeks ago' : 'Dec 15',
+    date: idx === 0 ? '2 weeks ago' : idx === 1 ? 'Dec 15' : 'Nov 28',
     isPast: true,
   }));
 }
@@ -154,7 +154,7 @@ function getPastEventsForRoute(routeId: string) {
 // Get upcoming events linked to this specific route
 function getUpcomingEventsForRoute(routeId: string) {
   const linkedEvents = eventRows.filter(event => event.routeId === routeId);
-  return linkedEvents.slice(0, 3).map((event, idx) => ({
+  return linkedEvents.map((event, idx) => ({
     ...event,
     date: idx === 0 ? 'This Saturday' : idx === 1 ? 'Next Sunday' : 'Jan 25',
     isUpcoming: true,
