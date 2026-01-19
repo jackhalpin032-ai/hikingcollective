@@ -40,6 +40,7 @@ export interface Event {
   meetingPoint: string;
   location: string;
   departureLocation: string;
+  routeId?: string; // Links to a hiking route
   transport: TransportMethod;
   activity: ActivityType;
   difficulty: TechnicalitySAC;
@@ -100,4 +101,5 @@ export interface EventRow {
   availableSpots?: number;
   waitlist?: number;
   attendeeAvatars: string[];
+  routeId?: string; // Links to a hiking route
 }
