@@ -158,6 +158,55 @@ export const eventRows: EventRow[] = [
     ],
     routeId: "croagh-patrick",
   },
+  {
+    id: 7,
+    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop",
+    time: "9:00",
+    duration: "3 hours",
+    title: "Bray to Greystones cliff walk",
+    organizer: "Aoife",
+    organizerAvatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face",
+    departureLocation: "Bray DART Station",
+    transportMethod: "DART",
+    activity: "Hiking",
+    difficulty: "T1",
+    distance: "6km",
+    elevation: "120m",
+    totalHeight: "120m gain",
+    attendees: 16,
+    availableSpots: 4,
+    attendeeAvatars: [
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face",
+    ],
+    routeId: "bray-greystones",
+  },
+  {
+    id: 8,
+    image: "https://images.unsplash.com/photo-1501555088652-021faa106b9b?w=600&h=400&fit=crop",
+    time: "10:00",
+    duration: "3 hours",
+    title: "Howth Head loop trail",
+    organizer: "Ciaran",
+    organizerAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+    departureLocation: "Howth DART Station",
+    transportMethod: "DART",
+    activity: "Hiking",
+    difficulty: "T2",
+    distance: "11km",
+    elevation: "280m",
+    totalHeight: "280m gain",
+    attendees: 10,
+    availableSpots: 6,
+    attendeeAvatars: [
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face",
+    ],
+    routeId: "howth-head",
+  },
 ];
 
 // Group events by date label
@@ -461,6 +510,160 @@ export const events: Event[] = [
       warnings: [
         'Some steep sections on the Spinc',
         'Can be slippery when wet'
+      ]
+    }
+  },
+  {
+    id: '7',
+    title: 'Bray to Greystones cliff walk',
+    description: 'A stunning coastal walk along the dramatic cliffs between Bray and Greystones. This scenic trail offers breathtaking views of the Irish Sea and is easily accessible by DART, making it perfect for a morning or afternoon adventure.',
+    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop",
+    date: 'Saturday, February 1, 2025',
+    dateLabel: 'Feb 1, Saturday',
+    time: '9:00 AM',
+    duration: '3h',
+    meetingPoint: 'Bray DART Station, main entrance',
+    location: 'Bray to Greystones, County Wicklow',
+    departureLocation: 'Bray DART Station',
+    routeId: 'bray-greystones',
+    transport: 'DART',
+    activity: 'Hiking',
+    difficulty: 'T1',
+    distance: '6km',
+    elevation: '120m',
+    maxParticipants: 20,
+    currentParticipants: 16,
+    availableSpots: 4,
+    status: 'going',
+    organizer: {
+      name: 'Aoife',
+      rating: 4.9,
+      eventsOrganised: 28,
+    },
+    participants: [
+      { name: 'Jack' },
+      { name: 'Sarah' },
+      { name: 'Marcus' },
+      { name: 'Elena' },
+      { name: 'Tom' },
+      { name: 'Lisa' },
+      { name: 'Alex' },
+      { name: 'Maria' },
+      { name: 'Ben' },
+      { name: 'Sophie' },
+      { name: 'David' },
+      { name: 'Emma' },
+      { name: 'Chris' },
+      { name: 'Julia' },
+      { name: 'Max' },
+      { name: 'Nina' },
+    ],
+    attendeeAvatars: [
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=face",
+    ],
+    requirements: [
+      'Basic fitness level - suitable for beginners',
+      'Comfortable with heights (cliff edge path)'
+    ],
+    whatToBring: [
+      'Comfortable walking shoes',
+      'Waterproof jacket',
+      '1L water',
+      'Snacks',
+      'Camera for coastal views'
+    ],
+    weather: {
+      condition: 'Sunny',
+      temp: '10°C to 14°C',
+      wind: '18 km/h',
+      humidity: '60%'
+    },
+    route: {
+      highlights: [
+        'Dramatic cliff views over the Irish Sea',
+        'Easy DART access from Dublin',
+        'Café stop in Greystones',
+        'Wildlife spotting opportunities'
+      ],
+      warnings: [
+        'Stay on marked path - cliff edges can be unstable',
+        'Can be windy - bring layers'
+      ]
+    }
+  },
+  {
+    id: '8',
+    title: 'Howth Head loop trail',
+    description: 'Explore the beautiful Howth peninsula with its rugged cliffs, heather-covered hills, and stunning views of Dublin Bay. This loop trail takes you around the headland with stops at the historic Baily Lighthouse viewpoint.',
+    image: "https://images.unsplash.com/photo-1501555088652-021faa106b9b?w=600&h=400&fit=crop",
+    date: 'Sunday, February 2, 2025',
+    dateLabel: 'Feb 2, Sunday',
+    time: '10:00 AM',
+    duration: '3.5h',
+    meetingPoint: 'Howth DART Station, outside main entrance',
+    location: 'Howth Head, County Dublin',
+    departureLocation: 'Howth DART Station',
+    routeId: 'howth-head',
+    transport: 'DART',
+    activity: 'Hiking',
+    difficulty: 'T2',
+    distance: '11km',
+    elevation: '280m',
+    maxParticipants: 16,
+    currentParticipants: 10,
+    availableSpots: 6,
+    status: 'available',
+    organizer: {
+      name: 'Ciaran',
+      rating: 4.8,
+      eventsOrganised: 15,
+    },
+    participants: [
+      { name: 'Sarah' },
+      { name: 'Marcus' },
+      { name: 'Elena' },
+      { name: 'Tom' },
+      { name: 'Lisa' },
+      { name: 'Alex' },
+      { name: 'Maria' },
+      { name: 'Ben' },
+      { name: 'Sophie' },
+      { name: 'David' },
+    ],
+    attendeeAvatars: [
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face",
+    ],
+    requirements: [
+      'Moderate fitness level',
+      'Some hiking experience preferred'
+    ],
+    whatToBring: [
+      'Hiking boots or sturdy shoes',
+      'Waterproof jacket',
+      '1.5L water',
+      'Packed lunch',
+      'Binoculars for wildlife'
+    ],
+    weather: {
+      condition: 'Partly cloudy',
+      temp: '8°C to 12°C',
+      wind: '22 km/h',
+      humidity: '68%'
+    },
+    route: {
+      highlights: [
+        'Baily Lighthouse viewpoint',
+        'Dublin Bay panoramas',
+        'Seabird colonies',
+        'Fresh seafood lunch in Howth village'
+      ],
+      warnings: [
+        'Exposed sections can be very windy',
+        'Some steep climbs'
       ]
     }
   },
