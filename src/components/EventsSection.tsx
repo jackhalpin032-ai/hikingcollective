@@ -1,6 +1,7 @@
 import { ChevronRight } from "lucide-react";
 import EventCard from "./EventCard";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { useAutoAnimate } from "@/hooks/useAutoAnimate";
 
 const events = [
   {
@@ -59,6 +60,7 @@ const events = [
 
 const EventsSection = () => {
   const { t } = useLanguage();
+  const [carouselRef] = useAutoAnimate();
 
   return (
     <section className="py-12 bg-muted/50" id="events">
@@ -69,7 +71,7 @@ const EventsSection = () => {
 
         {/* Events carousel */}
         <div className="relative">
-          <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+          <div ref={carouselRef} className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
             {events.map((event, index) => (
               <EventCard key={index} {...event} />
             ))}

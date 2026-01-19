@@ -23,6 +23,7 @@ import {
   mockActivities,
 } from '@/data/mockProfile';
 import { getEmptyStateCopy } from '@/lib/emptyStates';
+import { useAutoAnimate } from '@/hooks/useAutoAnimate';
 import { 
   Settings, 
   Mountain,
@@ -39,6 +40,10 @@ export default function Profile() {
   const navigate = useNavigate();
   const { profile, isLoading } = useProfile();
   const [activeTab, setActiveTab] = useState<'activity' | 'upcoming' | 'past' | 'organised'>('activity');
+  
+  const [tabContentRef] = useAutoAnimate();
+  const [reviewsRef] = useAutoAnimate();
+  const [difficultyRef] = useAutoAnimate();
 
   if (isLoading) {
     return (
@@ -198,7 +203,7 @@ export default function Profile() {
               {/* Difficulty Breakdown - Desktop sidebar */}
               <div className="mb-6">
                 <h3 className="font-bold text-foreground mb-3 text-sm">Trail Difficulty Breakdown</h3>
-                <div className="flex justify-between gap-2">
+                <div ref={difficultyRef} className="flex justify-between gap-2">
                   {Object.entries(displayProfile.difficultyBreakdown).map(([level, count]) => (
                     <DifficultyBadge key={level} level={level} count={count} />
                   ))}
@@ -260,37 +265,39 @@ export default function Profile() {
                 </div>
 
                 {/* Tab Content */}
-                {activeTab === 'activity' && (
-                  <div className="animate-fade-in">
-                    <RecentActivityFeed activities={mockRecentActivity} />
-                  </div>
-                )}
-
-                {activeTab === 'upcoming' && (
-                  <div className="space-y-4 animate-fade-in">
-                    {mockActivities.map((activity, idx) => (
-                      <ActivityCard key={idx} {...activity} />
-                    ))}
-                  </div>
-                )}
-
-                {activeTab === 'past' && (
-                  <div className="space-y-4 animate-fade-in">
-                    <div className="text-center py-8 text-muted-foreground">
-                      <Mountain className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                      <p className="font-medium">{displayProfile.stats.hikesCompleted} past hikes</p>
-                      <p className="text-sm">View {displayProfile.displayName}'s hiking history</p>
+                <div ref={tabContentRef}>
+                  {activeTab === 'activity' && (
+                    <div>
+                      <RecentActivityFeed activities={mockRecentActivity} />
                     </div>
-                  </div>
-                )}
+                  )}
 
-                {activeTab === 'organised' && (
-                  <div className="space-y-4 animate-fade-in">
-                    {mockActivities.filter(a => a.status === 'organiser').map((activity, idx) => (
-                      <ActivityCard key={idx} {...activity} />
-                    ))}
-                  </div>
-                )}
+                  {activeTab === 'upcoming' && (
+                    <div className="space-y-4">
+                      {mockActivities.map((activity, idx) => (
+                        <ActivityCard key={idx} {...activity} />
+                      ))}
+                    </div>
+                  )}
+
+                  {activeTab === 'past' && (
+                    <div className="space-y-4">
+                      <div className="text-center py-8 text-muted-foreground">
+                        <Mountain className="w-12 h-12 mx-auto mb-3 opacity-30" />
+                        <p className="font-medium">{displayProfile.stats.hikesCompleted} past hikes</p>
+                        <p className="text-sm">View {displayProfile.displayName}'s hiking history</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {activeTab === 'organised' && (
+                    <div className="space-y-4">
+                      {mockActivities.filter(a => a.status === 'organiser').map((activity, idx) => (
+                        <ActivityCard key={idx} {...activity} />
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Reviews Section */}
@@ -304,7 +311,7 @@ export default function Profile() {
                     Show all <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div ref={reviewsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {mockReviews.map((review, idx) => (
                     <ReviewCard key={idx} {...review} />
                   ))}

@@ -10,6 +10,7 @@ import PageTransition from '@/components/PageTransition';
 import { FocusCards, type FocusCard } from '@/components/ui/focus-cards';
 import { irishRoutes, filterOptions } from '@/data/routes';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useAutoAnimate } from '@/hooks/useAutoAnimate';
 
 const initialFilters: FilterState = {
   difficulty: [],
@@ -46,6 +47,7 @@ const featuredRoutes: (FocusCard & { id: string })[] = [
 export default function Routes() {
   const [filters, setFilters] = useState<FilterState>(initialFilters);
   const isMobile = useIsMobile();
+  const [routesGridRef] = useAutoAnimate();
   
   const activeFilterCount = useMemo(() => {
     let count = 0;
@@ -230,7 +232,7 @@ export default function Routes() {
               
               {/* Routes */}
               {filteredRoutes.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div ref={routesGridRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredRoutes.map((route) => (
                     <RouteCard key={route.id} route={route} />
                   ))}

@@ -15,6 +15,7 @@ import PageTransition from "@/components/PageTransition";
 import { useEvents, useUserEvents } from "@/hooks/useEvents";
 import { locations, activities } from "@/data/events";
 import { getEmptyStateCopy } from "@/lib/emptyStates";
+import { useAutoAnimate } from "@/hooks/useAutoAnimate";
 
 type FilterTab = "upcoming" | "location" | "activity";
 
@@ -27,6 +28,10 @@ const Events = () => {
   const { upcoming: userUpcomingEvents, past: userPastEvents, isLoading: userEventsLoading } = useUserEvents();
 
   const emptyState = getEmptyStateCopy('events');
+  
+  const [eventsListRef] = useAutoAnimate();
+  const [upcomingSidebarRef] = useAutoAnimate();
+  const [pastSidebarRef] = useAutoAnimate();
 
   if (error) {
     return (
@@ -138,7 +143,7 @@ const Events = () => {
                 </div>
 
                 {/* Event Rows */}
-                <div>
+                <div ref={eventsListRef}>
                   {events.map((event) => (
                     <EventRow key={event.id} {...event} />
                   ))}
@@ -171,9 +176,11 @@ const Events = () => {
                   <div className="h-24 bg-muted rounded" />
                 </div>
               ) : (
-                userUpcomingEvents.map((event) => (
-                  <SidebarEventCard key={event.id} {...event} />
-                ))
+                <div ref={upcomingSidebarRef}>
+                  {userUpcomingEvents.map((event) => (
+                    <SidebarEventCard key={event.id} {...event} />
+                  ))}
+                </div>
               )}
             </div>
 
@@ -185,9 +192,11 @@ const Events = () => {
                   <div className="h-24 bg-muted rounded" />
                 </div>
               ) : (
-                userPastEvents.map((event) => (
-                  <SidebarEventCard key={event.id} {...event} isPast />
-                ))
+                <div ref={pastSidebarRef}>
+                  {userPastEvents.map((event) => (
+                    <SidebarEventCard key={event.id} {...event} isPast />
+                  ))}
+                </div>
               )}
             </div>
           </aside>
