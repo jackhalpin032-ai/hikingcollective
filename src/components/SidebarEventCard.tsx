@@ -1,10 +1,12 @@
 import { forwardRef } from 'react';
+import { Link } from 'react-router-dom';
 import { Bike, Footprints, Mountain, ArrowUpRight } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
 interface SidebarEventCardProps {
+  id: number;
   date: string;
   dayOfWeek: string;
   title: string;
@@ -29,6 +31,7 @@ const activityIcons: Record<string, React.ReactNode> = {
 };
 
 const SidebarEventCard = forwardRef<HTMLDivElement, SidebarEventCardProps>(({
+  id,
   date,
   dayOfWeek,
   title,
@@ -46,7 +49,8 @@ const SidebarEventCard = forwardRef<HTMLDivElement, SidebarEventCardProps>(({
   images,
 }, ref) => {
   return (
-    <div ref={ref} className="py-4 border-b border-border last:border-b-0">
+    <Link to={`/events/${id}`} className="block hover:bg-muted/50 rounded-lg transition-colors">
+      <div ref={ref} className="py-4 border-b border-border last:border-b-0">
       <div className="flex gap-3">
         {/* Date column */}
         <div className="text-center w-10 flex-shrink-0">
@@ -121,7 +125,8 @@ const SidebarEventCard = forwardRef<HTMLDivElement, SidebarEventCardProps>(({
           )}
         </div>
       </div>
-    </div>
+      </div>
+    </Link>
   );
 });
 
