@@ -27,7 +27,7 @@ import DetailViewLayout, {
   DescriptionSection 
 } from '@/components/DetailViewLayout';
 import StatsRow from '@/components/detail/StatsRow';
-import MapSection from '@/components/detail/MapSection';
+import PhotoGallerySection from '@/components/detail/PhotoGallerySection';
 import { cn } from '@/lib/utils';
 import { irishRoutes } from '@/data/routes';
 import { eventRows } from '@/data/events';
@@ -112,6 +112,28 @@ const mockComments = [
   },
 ];
 
+// Route gallery photos - high quality scenic images
+const routeGalleryPhotos: Record<string, string[]> = {
+  'carrauntoohil': [
+    'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&h=900&fit=crop',
+    'https://images.unsplash.com/photo-1551632811-561732d1e306?w=1200&h=900&fit=crop',
+    'https://images.unsplash.com/photo-1486870591958-9b9d0d1dda99?w=1200&h=900&fit=crop',
+    'https://images.unsplash.com/photo-1454496522488-7a8e488e8606?w=1200&h=900&fit=crop',
+    'https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?w=1200&h=900&fit=crop',
+  ],
+  'glendalough-spinc': [
+    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&h=900&fit=crop',
+    'https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?w=1200&h=900&fit=crop',
+    'https://images.unsplash.com/photo-1501555088652-021faa106b9b?w=1200&h=900&fit=crop',
+  ],
+  'default': [
+    'https://images.unsplash.com/photo-1551632811-561732d1e306?w=1200&h=900&fit=crop',
+    'https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?w=1200&h=900&fit=crop',
+    'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&h=900&fit=crop',
+    'https://images.unsplash.com/photo-1501555088652-021faa106b9b?w=1200&h=900&fit=crop',
+  ],
+};
+
 // Mock photos from previous events
 const mockEventPhotos = [
   'https://images.unsplash.com/photo-1551632811-561732d1e306?w=200&h=200&fit=crop',
@@ -183,14 +205,16 @@ export default function RouteDetail() {
     />
   );
 
-  // Map section with route image
+  // Get photos for this route
+  const galleryPhotos = route ? (routeGalleryPhotos[route.id] || routeGalleryPhotos['default']) : [];
+
+  // Photo gallery section (center column)
   const mapSection = route && (
-    <MapSection
-      imageUrl={route.thumbnail}
-      showRouteLink={false}
+    <PhotoGallerySection
+      images={galleryPhotos}
+      title={route.name}
       showDownloadGpx={true}
-      participantPhotos={eventRows[0]?.attendeeAvatars}
-      participantCount={13}
+      showMapPlaceholder={true}
     />
   );
 
