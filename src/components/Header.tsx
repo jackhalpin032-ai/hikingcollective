@@ -35,11 +35,11 @@ const Header = () => {
       <div className="flex h-14 items-center justify-between px-4 md:px-6 lg:px-8">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 group">
-          <div className="relative">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="transition-transform group-hover:scale-105">
-              <path d="M16 3L5 12V28H27V12L16 3Z" className="fill-primary" />
-              <path d="M11 20C11 17.5 13.5 15 16 15C18.5 15 21 17.5 21 20" className="stroke-warning" strokeWidth="2.5" strokeLinecap="round" />
-              <circle cx="16" cy="10" r="2.5" className="fill-warning" />
+          <div className="relative flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="transition-transform group-hover:scale-110">
+              <path d="M8 21L12 13L16 21H8Z" className="fill-primary/60" />
+              <path d="M3 21L9 9L15 21H3Z" className="fill-primary" />
+              <circle cx="18" cy="5" r="3" className="fill-warning" />
             </svg>
           </div>
           <span className="text-lg font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">

@@ -361,13 +361,15 @@ export default function DetailViewLayout({
         <div className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur-sm">
           <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3">
             {/* Logo - links to homepage */}
-            <Link to="/" className="flex items-center gap-2">
-              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M14 2L4 10L4 24H24V10L14 2Z" fill="hsl(var(--primary))" />
-                <path d="M10 18C10 16 12 14 14 14C16 14 18 16 18 18" stroke="hsl(var(--warning))" strokeWidth="2" strokeLinecap="round" />
-                <circle cx="14" cy="10" r="2" fill="hsl(var(--warning))" />
-              </svg>
-              <span className="text-xl font-bold italic text-primary hidden sm:block">The Hiking Collective</span>
+            <Link to="/" className="flex items-center gap-2.5 group">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8 21L12 13L16 21H8Z" fill="hsl(var(--primary) / 0.6)" />
+                  <path d="M3 21L9 9L15 21H3Z" fill="hsl(var(--primary))" />
+                  <circle cx="18" cy="5" r="3" fill="hsl(var(--warning))" />
+                </svg>
+              </div>
+              <span className="text-lg font-bold tracking-tight text-foreground hidden sm:block group-hover:text-primary transition-colors">The Hiking Collective</span>
             </Link>
             
             <div className="flex items-center gap-3">
