@@ -126,8 +126,8 @@ export default function EventDetail() {
   const mapSection = event && (
     <MapSection
       imageUrl={event.image}
-      routeId="wicklow-way"
-      showRouteLink={true}
+      routeId={event.routeId}
+      showRouteLink={!!event.routeId}
       showDownloadGpx={true}
     />
   );
