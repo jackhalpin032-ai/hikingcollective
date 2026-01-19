@@ -43,6 +43,13 @@ const Hero = () => {
             <div className="aspect-[4/3] rounded-3xl overflow-hidden bg-muted shadow-2xl ring-1 ring-border">
               <img
                 src="https://images.unsplash.com/photo-1551632811-561732d1e306?w=800&h=600&fit=crop&auto=format&q=75"
+                srcSet="
+                  https://images.unsplash.com/photo-1551632811-561732d1e306?w=400&h=300&fit=crop&auto=format&q=75 400w,
+                  https://images.unsplash.com/photo-1551632811-561732d1e306?w=600&h=450&fit=crop&auto=format&q=75 600w,
+                  https://images.unsplash.com/photo-1551632811-561732d1e306?w=800&h=600&fit=crop&auto=format&q=75 800w,
+                  https://images.unsplash.com/photo-1551632811-561732d1e306?w=1200&h=900&fit=crop&auto=format&q=75 1200w
+                "
+                sizes="(max-width: 768px) 100vw, 50vw"
                 alt="Hikers on a mountain trail at sunrise"
                 className="w-full h-full object-cover"
                 loading="eager"
