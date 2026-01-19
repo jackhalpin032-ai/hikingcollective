@@ -1,11 +1,13 @@
 import { ReactNode, useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { X, Share2, ThumbsUp, ThumbsDown, Flag, MessageCircle, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
+import { modalVariants, modalTransition } from '@/components/PageTransition';
 
 // ============ Shared Sub-components ============
 
@@ -337,7 +339,14 @@ export default function DetailViewLayout({
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-background overflow-y-auto">
+    <motion.div 
+      className="fixed inset-0 z-50 bg-background overflow-y-auto"
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      variants={modalVariants}
+      transition={modalTransition}
+    >
       {/* Close button - fixed in top right */}
       <button
         onClick={handleClose}
@@ -428,6 +437,6 @@ export default function DetailViewLayout({
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

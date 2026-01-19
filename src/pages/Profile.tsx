@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import PageTransition from '@/components/PageTransition';
 import DifficultyBadge from '@/components/profile/DifficultyBadge';
 import ProfileStats from '@/components/profile/ProfileStats';
 import ReviewCard from '@/components/profile/ReviewCard';
@@ -58,8 +59,9 @@ export default function Profile() {
   } : mockProfile;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-muted/30 to-background flex flex-col">
-      <Header />
+    <PageTransition>
+      <div className="min-h-screen bg-gradient-to-b from-muted/30 to-background flex flex-col">
+        <Header />
       
       <main className="flex-1 pb-8">
         {/* Desktop Layout Container */}
@@ -314,6 +316,7 @@ export default function Profile() {
       </main>
 
       <Footer />
-    </div>
+      </div>
+    </PageTransition>
   );
 }

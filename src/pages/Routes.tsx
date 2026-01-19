@@ -6,6 +6,7 @@ import Footer from '@/components/Footer';
 import RouteCard from '@/components/routes/RouteCard';
 import RouteFilters, { FilterState } from '@/components/routes/RouteFilters';
 import RouteFiltersMobile from '@/components/routes/RouteFiltersMobile';
+import PageTransition from '@/components/PageTransition';
 import { FocusCards, type FocusCard } from '@/components/ui/focus-cards';
 import { irishRoutes, filterOptions } from '@/data/routes';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -131,8 +132,9 @@ export default function Routes() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <Header />
+    <PageTransition>
+      <div className="min-h-screen bg-background flex flex-col">
+        <Header />
       
       <main className="flex-1">
         {/* Hero Section */}
@@ -259,6 +261,7 @@ export default function Routes() {
       </main>
       
       <Footer />
-    </div>
+      </div>
+    </PageTransition>
   );
 }
