@@ -252,6 +252,7 @@ export const events: Event[] = [
     meetingPoint: 'Dublin Heuston Station, Platform 4',
     location: 'Carrauntoohil, County Kerry',
     departureLocation: 'Dublin Heuston Station',
+    routeId: 'carrauntoohil',
     transport: 'Car',
     activity: 'Hiking',
     difficulty: 'T3',
@@ -330,6 +331,7 @@ export const events: Event[] = [
     meetingPoint: 'Dublin Connolly Station, DART Platform',
     location: 'Wicklow Mountains, County Wicklow',
     departureLocation: 'Dublin Connolly Station',
+    routeId: 'glendalough-spinc',
     transport: 'Bus',
     activity: 'Hiking',
     difficulty: 'T2',
@@ -387,6 +389,78 @@ export const events: Event[] = [
       ],
       warnings: [
         'Trail can be muddy after rain - wear waterproof boots'
+      ]
+    }
+  },
+  {
+    id: '3',
+    title: 'Glendalough Valley loop',
+    description: 'Explore the magical Glendalough valley with its ancient monastic ruins and serene lakes. This moderate loop takes you through the Spinc ridge with breathtaking views of the Upper and Lower Lakes.',
+    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=400&fit=crop",
+    date: 'Saturday, January 18, 2025',
+    dateLabel: 'Jan 18, Saturday',
+    time: '9:00 AM',
+    duration: '4h',
+    meetingPoint: 'Glendalough Visitor Centre Car Park',
+    location: 'Glendalough, County Wicklow',
+    departureLocation: 'Dublin',
+    routeId: 'glendalough-spinc',
+    transport: 'Bus',
+    activity: 'Hiking',
+    difficulty: 'T2',
+    distance: '9km',
+    elevation: '380m',
+    maxParticipants: 12,
+    currentParticipants: 8,
+    availableSpots: 4,
+    status: 'going',
+    organizer: {
+      name: 'John',
+      rating: 4.7,
+      eventsOrganised: 18,
+    },
+    participants: [
+      { name: 'Sarah' },
+      { name: 'Mike' },
+      { name: 'Emma' },
+      { name: 'David' },
+      { name: 'Anna' },
+      { name: 'Chris' },
+      { name: 'Julia' },
+      { name: 'Max' },
+    ],
+    attendeeAvatars: [
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
+    ],
+    requirements: [
+      'Moderate fitness level',
+      'Suitable for those with some hiking experience'
+    ],
+    whatToBring: [
+      'Sturdy hiking boots',
+      'Waterproof jacket',
+      '1.5L water',
+      'Packed lunch',
+      'Camera for scenic photos'
+    ],
+    weather: {
+      condition: 'Sunny intervals',
+      temp: '6°C to 11°C',
+      wind: '12 km/h',
+      humidity: '65%'
+    },
+    route: {
+      highlights: [
+        'Spinc ridge panoramic views',
+        'Upper and Lower Lakes',
+        'Ancient monastic settlement',
+        'Poulanass Waterfall'
+      ],
+      warnings: [
+        'Some steep sections on the Spinc',
+        'Can be slippery when wet'
       ]
     }
   },
