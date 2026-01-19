@@ -257,7 +257,9 @@ export default function RouteDetail() {
       <PhotosFromEvents
         images={mockEventPhotos}
         totalCount={12}
-        onSeeAll={() => navigate('/events')}
+        onSeeAll={() => {
+          document.getElementById('past-events')?.scrollIntoView({ behavior: 'smooth' });
+        }}
       />
 
       {/* Route Details Grid - inspired by reference */}
@@ -455,7 +457,7 @@ export default function RouteDetail() {
       </div>
 
       {/* Past Events on this Route - cleaner cards like reference */}
-      <div className="mb-6">
+      <div id="past-events" className="mb-6">
         <h2 className="font-semibold text-foreground mb-4 text-lg">Past Events</h2>
         
         {pastEvents.length > 0 ? (
