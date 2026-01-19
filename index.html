@@ -3,12 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- TODO: Set the document title to the name of your application -->
+    
+    <!-- Preload critical fonts to reduce render-blocking -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href="/src/index.css" />
+    
+    <!-- DNS prefetch for external resources -->
+    <link rel="dns-prefetch" href="https://images.unsplash.com" />
+    
     <title>The Hiking Collective</title>
     <meta name="description" content="A non-profit community for outdoor and sport lovers. Join hiking, climbing, and cycling events with like-minded people." />
     <meta name="author" content="The Hiking Collective" />
 
-    <!-- TODO: Update og:title to match your application name -->
     <meta property="og:title" content="The Hiking Collective" />
     <meta property="og:description" content="A non-profit community for outdoor and sport lovers. Join hiking, climbing, and cycling events with like-minded people." />
     <meta property="og:type" content="website" />

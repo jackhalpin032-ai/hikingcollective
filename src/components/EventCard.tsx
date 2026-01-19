@@ -28,6 +28,8 @@ const EventCard = ({
         <img
           src={image}
           alt={title}
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
         
@@ -66,9 +68,10 @@ const EventCard = ({
             {attendeeAvatars.slice(0, 3).map((avatar, index) => (
               <div
                 key={index}
-                className="h-6 w-6 rounded-full border-2 border-background overflow-hidden"
+                className="h-6 w-6 rounded-full border-2 border-background overflow-hidden bg-muted"
               >
                 <img
+                  loading="lazy"
                   src={avatar}
                   alt="Attendee"
                   className="h-full w-full object-cover"

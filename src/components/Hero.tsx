@@ -42,9 +42,12 @@ const Hero = () => {
           <div className="order-1 md:order-2">
             <div className="aspect-[4/3] rounded-3xl overflow-hidden bg-muted shadow-2xl ring-1 ring-border">
               <img
-                src="https://images.unsplash.com/photo-1551632811-561732d1e306?w=800&h=600&fit=crop"
+                src="https://images.unsplash.com/photo-1551632811-561732d1e306?w=800&h=600&fit=crop&auto=format&q=75"
                 alt="Hikers on a mountain trail at sunrise"
                 className="w-full h-full object-cover"
+                loading="eager"
+                fetchPriority="high"
+                decoding="async"
               />
             </div>
           </div>
