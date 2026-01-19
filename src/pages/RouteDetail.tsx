@@ -144,10 +144,20 @@ const mockEventPhotos = [
 // Get past events linked to this specific route
 function getPastEventsForRoute(routeId: string) {
   const linkedEvents = eventRows.filter(event => event.routeId === routeId);
-  return linkedEvents.map((event, idx) => ({
+  return linkedEvents.slice(0, 2).map((event, idx) => ({
     ...event,
-    date: idx === 0 ? '2 weeks ago' : idx === 1 ? 'Dec 15' : 'Nov 28',
+    date: idx === 0 ? '2 weeks ago' : 'Dec 15',
     isPast: true,
+  }));
+}
+
+// Get upcoming events linked to this specific route
+function getUpcomingEventsForRoute(routeId: string) {
+  const linkedEvents = eventRows.filter(event => event.routeId === routeId);
+  return linkedEvents.slice(0, 3).map((event, idx) => ({
+    ...event,
+    date: idx === 0 ? 'This Saturday' : idx === 1 ? 'Next Sunday' : 'Jan 25',
+    isUpcoming: true,
   }));
 }
 
@@ -157,6 +167,7 @@ export default function RouteDetail() {
   
   const route = irishRoutes.find(r => r.id === id);
   const pastEvents = id ? getPastEventsForRoute(id) : [];
+  const upcomingEvents = id ? getUpcomingEventsForRoute(id) : [];
 
   const notFoundContent = (
     <div className="text-center">
@@ -331,19 +342,83 @@ export default function RouteDetail() {
     </>
   );
 
-  // Right column - Past events + Comments
+  // Right column - Upcoming Events + Past events + Comments
   const rightColumn = route && (
     <>
+      {/* Upcoming Events on this Route */}
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-semibold text-foreground uppercase text-xs tracking-wider text-muted-foreground flex items-center gap-2">
+            <Calendar className="w-4 h-4" />
+            Upcoming Events
+          </h2>
+          {upcomingEvents.length > 0 && (
+            <Button variant="link" size="sm" className="text-primary p-0" asChild>
+              <Link to="/events">See all</Link>
+            </Button>
+          )}
+        </div>
+        
+        {upcomingEvents.length > 0 ? (
+          <div className="space-y-3">
+            {upcomingEvents.map((event) => (
+              <Link 
+                key={event.id} 
+                to={`/events/${event.id}`}
+                className="block"
+              >
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-primary/5 border border-primary/20 hover:bg-primary/10 transition-colors">
+                  <img 
+                    src={event.image} 
+                    alt={event.title}
+                    className="w-14 h-14 rounded-lg object-cover flex-shrink-0"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-foreground truncate">{event.title}</p>
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
+                      <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4 bg-primary/10 text-primary">
+                        {event.date}
+                      </Badge>
+                      <span>•</span>
+                      <span>{event.difficulty}</span>
+                    </div>
+                    <div className="flex items-center gap-1 mt-2">
+                      <div className="flex -space-x-2">
+                        {event.attendeeAvatars.slice(0, 3).map((avatar, idx) => (
+                          <Avatar key={idx} className="w-5 h-5 border border-background">
+                            <AvatarImage src={avatar} />
+                            <AvatarFallback className="text-[8px]">U</AvatarFallback>
+                          </Avatar>
+                        ))}
+                      </div>
+                      <span className="text-xs text-muted-foreground ml-1">
+                        {event.attendees} going • {event.availableSpots || 0} spots left
+                      </span>
+                    </div>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-primary flex-shrink-0" />
+                </div>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-6 text-muted-foreground bg-muted/30 rounded-lg">
+            <Calendar className="w-10 h-10 mx-auto mb-2 opacity-50" />
+            <p className="text-sm">No upcoming events on this route</p>
+            <Button variant="link" size="sm" className="text-primary mt-1" onClick={() => navigate('/events')}>
+              Create one
+            </Button>
+          </div>
+        )}
+      </div>
+
       {/* Past Events on this Route */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-3">
           <h2 className="font-semibold text-foreground uppercase text-xs tracking-wider text-muted-foreground flex items-center gap-2">
             <Calendar className="w-4 h-4" />
-            Past Events on this Route
+            Past Events
           </h2>
-          <Button variant="link" size="sm" className="text-primary p-0" asChild>
-            <Link to="/events">See all</Link>
-          </Button>
         </div>
         
         {pastEvents.length > 0 ? (
@@ -387,9 +462,8 @@ export default function RouteDetail() {
             ))}
           </div>
         ) : (
-          <div className="text-center py-6 text-muted-foreground">
-            <Calendar className="w-10 h-10 mx-auto mb-2 opacity-50" />
-            <p className="text-sm">No past events on this route</p>
+          <div className="text-center py-4 text-muted-foreground">
+            <p className="text-sm">No past events yet</p>
           </div>
         )}
       </div>
