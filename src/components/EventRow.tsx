@@ -1,9 +1,11 @@
 import { forwardRef } from 'react';
+import { Link } from 'react-router-dom';
 import { Mountain, Bike, Footprints, TreePine } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 
 interface EventRowProps {
+  id: number;
   image: string;
   time: string;
   duration: string;
@@ -31,6 +33,7 @@ const activityIcons: Record<string, React.ReactNode> = {
 };
 
 const EventRow = forwardRef<HTMLDivElement, EventRowProps>(({
+  id,
   image,
   time,
   duration,
@@ -52,10 +55,11 @@ const EventRow = forwardRef<HTMLDivElement, EventRowProps>(({
   const isFull = availableSpots === 0 || !!waitlist;
 
   return (
-    <div 
-      ref={ref}
-      className="grid grid-cols-[60px_1fr_1fr_1.2fr_1fr] gap-4 py-4 border-b border-border hover:bg-muted/30 transition-colors cursor-pointer items-center"
-    >
+    <Link to={`/events/${id}`} className="block">
+      <div 
+        ref={ref}
+        className="grid grid-cols-[60px_1fr_1fr_1.2fr_1fr] gap-4 py-4 border-b border-border hover:bg-muted/30 transition-colors cursor-pointer items-center"
+      >
       {/* Time & Duration */}
       <div className="text-sm">
         <p className="font-semibold text-foreground">{time}</p>
@@ -128,7 +132,8 @@ const EventRow = forwardRef<HTMLDivElement, EventRowProps>(({
           <span className="text-xs text-muted-foreground ml-2">full</span>
         )}
       </div>
-    </div>
+      </div>
+    </Link>
   );
 });
 
