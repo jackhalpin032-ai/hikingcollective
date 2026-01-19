@@ -31,16 +31,20 @@ const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-background border-b border-border">
-      <div className="container flex h-16 items-center justify-between">
+    <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur-sm border-b border-border/50">
+      <div className="flex h-14 items-center justify-between px-4 md:px-6 lg:px-8">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2">
-          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M14 2L4 10L4 24H24V10L14 2Z" fill="hsl(var(--primary))" />
-            <path d="M10 18C10 16 12 14 14 14C16 14 18 16 18 18" stroke="hsl(var(--warning))" strokeWidth="2" strokeLinecap="round" />
-            <circle cx="14" cy="10" r="2" fill="hsl(var(--warning))" />
-          </svg>
-          <span className="text-xl font-bold italic text-primary">The Hiking Collective</span>
+        <Link to="/" className="flex items-center gap-2.5 group">
+          <div className="relative">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="transition-transform group-hover:scale-105">
+              <path d="M16 3L5 12V28H27V12L16 3Z" className="fill-primary" />
+              <path d="M11 20C11 17.5 13.5 15 16 15C18.5 15 21 17.5 21 20" className="stroke-warning" strokeWidth="2.5" strokeLinecap="round" />
+              <circle cx="16" cy="10" r="2.5" className="fill-warning" />
+            </svg>
+          </div>
+          <span className="text-lg font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
+            The Hiking Collective
+          </span>
         </Link>
 
         {/* Navigation */}
