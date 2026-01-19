@@ -100,13 +100,11 @@ const Header = () => {
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={jackPhoto} alt="Jack" />
                       <AvatarFallback className="bg-primary/20 text-primary text-sm font-semibold">
-                        {hasProfile && profile?.displayName 
-                          ? profile.displayName.charAt(0).toUpperCase() 
-                          : 'J'}
+                        {profile?.displayName?.charAt(0).toUpperCase() || 'J'}
                       </AvatarFallback>
                     </Avatar>
                     <span className="hidden md:block text-sm font-medium text-foreground">
-                      {hasProfile && profile?.displayName ? profile.displayName : 'Guest'}
+                      {profile?.displayName || 'Jack'}
                     </span>
                     <ChevronDown className="h-4 w-4 text-muted-foreground hidden md:block" />
                   </Button>
