@@ -1,9 +1,7 @@
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { 
-  Clock, 
   MapPin, 
   Calendar,
-  Users,
   Thermometer,
   Car,
   Dog,
@@ -13,15 +11,10 @@ import {
   Toilet,
   Bus,
   Home,
-  TrendingUp,
-  Route,
   Compass,
-  Heart,
   ChevronRight,
   CheckCircle2,
-  Map,
-  Mountain,
-  Download
+  Mountain
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -35,7 +28,6 @@ import DetailViewLayout, {
 } from '@/components/DetailViewLayout';
 import StatsRow from '@/components/detail/StatsRow';
 import MapSection from '@/components/detail/MapSection';
-import DifficultyBadge from '@/components/profile/DifficultyBadge';
 import { cn } from '@/lib/utils';
 import { irishRoutes } from '@/data/routes';
 import { eventRows } from '@/data/events';
@@ -202,19 +194,188 @@ export default function RouteDetail() {
     />
   );
 
-  // Bottom actions
-  const bottomActions = route && (
+  // Left column content
+  const leftColumn = route && (
     <>
-      <Button variant="outline" className="flex-1">
-        <Heart className="w-4 h-4 mr-2" />
-        Save Route
-      </Button>
-      <Button className="flex-1" asChild>
-        <Link to={`/events?route=${route.id}`}>
-          <Users className="w-4 h-4 mr-2" />
-          Create Event
-        </Link>
-      </Button>
+      {/* Description */}
+      <DescriptionSection
+        content={route.description}
+        disclaimer="Hiking can be dangerous. I am not a mountain guide. Everybody is responsible for her/himself. Make yourself familiar with the route and its requirements. It's recommended to download a map and bring a cell phone and first aid kit for emergencies."
+      />
+
+      {/* Route Creator (instead of Organizer) */}
+      <OrganizerSection
+        name={mockCreator.name}
+        photo={mockCreator.photo}
+        badge={mockCreator.badge}
+        badgeColor="bg-emerald-500"
+        label="Route Creator"
+        onSendMessage={() => console.log('Send message')}
+      />
+
+      {/* Photos from Previous Events */}
+      <PhotosFromEvents
+        images={mockEventPhotos}
+        totalCount={12}
+        onSeeAll={() => navigate('/events')}
+      />
+
+      {/* Technical Details */}
+      <Card className="p-4 mb-6">
+        <h2 className="font-semibold text-foreground mb-4 flex items-center gap-2 uppercase text-xs tracking-wider text-muted-foreground">
+          <Mountain className="w-4 h-4" />
+          Technical Details
+        </h2>
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">Technicality Grade</span>
+            <div className="flex items-center gap-2">
+              <div className={cn(
+                "w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold",
+                technicalityColors[route.technicality]
+              )}>
+                {route.technicality}
+              </div>
+              <span className="text-sm text-foreground">{technicalityDescriptions[route.technicality]}</span>
+            </div>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">Difficulty</span>
+            <span className="text-sm font-medium capitalize text-foreground">{route.difficulty}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">Route Type</span>
+            <span className="text-sm font-medium text-foreground">{formatRouteType(route.routeType)}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">Best Season</span>
+            <span className="text-sm font-medium text-foreground">{formatSeason(route.season)}</span>
+          </div>
+        </div>
+      </Card>
+
+      {/* Facilities */}
+      {route.facilities.length > 0 && (
+        <Card className="p-4 mb-6">
+          <h2 className="font-semibold text-foreground mb-3 uppercase text-xs tracking-wider text-muted-foreground">Facilities</h2>
+          <div className="flex flex-wrap gap-2">
+            {route.facilities.map((facility) => {
+              const Icon = facilityIcons[facility] || MapPin;
+              return (
+                <Badge key={facility} variant="outline" className="gap-1.5 py-1.5">
+                  <Icon className="w-3.5 h-3.5" />
+                  {facility}
+                </Badge>
+              );
+            })}
+          </div>
+        </Card>
+      )}
+
+      {/* Accessibility */}
+      {route.accessibility.length > 0 && (
+        <Card className="p-4 mb-6">
+          <h2 className="font-semibold text-foreground mb-3 uppercase text-xs tracking-wider text-muted-foreground">Accessibility</h2>
+          <div className="flex flex-wrap gap-2">
+            {route.accessibility.map((option) => {
+              const Icon = accessibilityIcons[option] || Accessibility;
+              return (
+                <Badge key={option} variant="secondary" className="gap-1.5 py-1.5">
+                  <Icon className="w-3.5 h-3.5" />
+                  {option}
+                </Badge>
+              );
+            })}
+          </div>
+        </Card>
+      )}
+
+      {/* Highlights */}
+      {route.highlights.length > 0 && (
+        <div className="mb-6">
+          <h2 className="font-semibold text-foreground mb-3 uppercase text-xs tracking-wider text-muted-foreground">Highlights</h2>
+          <div className="space-y-2">
+            {route.highlights.map((highlight, idx) => (
+              <div key={idx} className="flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                <span className="text-sm text-muted-foreground">{highlight}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </>
+  );
+
+  // Right column - Past events + Comments
+  const rightColumn = route && (
+    <>
+      {/* Past Events on this Route */}
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-semibold text-foreground uppercase text-xs tracking-wider text-muted-foreground flex items-center gap-2">
+            <Calendar className="w-4 h-4" />
+            Past Events on this Route
+          </h2>
+          <Button variant="link" size="sm" className="text-primary p-0" asChild>
+            <Link to="/events">See all</Link>
+          </Button>
+        </div>
+        
+        {pastEvents.length > 0 ? (
+          <div className="space-y-3">
+            {pastEvents.map((event) => (
+              <Link 
+                key={event.id} 
+                to={`/events/${event.id}`}
+                className="block"
+              >
+                <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors">
+                  <img 
+                    src={event.image} 
+                    alt={event.title}
+                    className="w-14 h-14 rounded-lg object-cover flex-shrink-0"
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-foreground truncate">{event.title}</p>
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
+                      <span>{event.date}</span>
+                      <span>•</span>
+                      <span>{event.difficulty}</span>
+                    </div>
+                    <div className="flex items-center gap-1 mt-2">
+                      <div className="flex -space-x-2">
+                        {event.attendeeAvatars.slice(0, 3).map((avatar, idx) => (
+                          <Avatar key={idx} className="w-5 h-5 border border-background">
+                            <AvatarImage src={avatar} />
+                            <AvatarFallback className="text-[8px]">U</AvatarFallback>
+                          </Avatar>
+                        ))}
+                      </div>
+                      <span className="text-xs text-muted-foreground ml-1">
+                        {event.attendees} went
+                      </span>
+                    </div>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                </div>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-6 text-muted-foreground">
+            <Calendar className="w-10 h-10 mx-auto mb-2 opacity-50" />
+            <p className="text-sm">No past events on this route</p>
+          </div>
+        )}
+      </div>
+
+      {/* Comments */}
+      <CommentsSection
+        comments={mockComments}
+        onAddComment={(content) => console.log('Add comment:', content)}
+        onClearAll={() => console.log('Clear all')}
+      />
     </>
   );
 
@@ -225,188 +386,17 @@ export default function RouteDetail() {
       organizerChip={creatorChip}
       statsRow={statsRow}
       mapSection={mapSection}
+      leftColumn={leftColumn}
+      rightColumn={rightColumn}
       notFound={!route}
       notFoundContent={notFoundContent}
-      bottomActions={bottomActions}
-      onBack={() => navigate('/routes')}
+      onClose={() => navigate('/routes')}
     >
+      {/* Fallback for mobile */}
       {route && (
-        <>
-          {/* Description */}
-          <DescriptionSection
-            content={route.description}
-            disclaimer="Hiking can be dangerous. I am not a mountain guide. Everybody is responsible for her/himself. Make yourself familiar with the route and its requirements. It's recommended to download a map and bring a cell phone and first aid kit for emergencies."
-          />
-
-          {/* Route Creator (instead of Organizer) */}
-          <OrganizerSection
-            name={mockCreator.name}
-            photo={mockCreator.photo}
-            badge={mockCreator.badge}
-            badgeColor="bg-emerald-500"
-            label="Route Creator"
-            onSendMessage={() => console.log('Send message')}
-          />
-
-          {/* Photos from Previous Events */}
-          <PhotosFromEvents
-            images={mockEventPhotos}
-            totalCount={12}
-            onSeeAll={() => navigate('/events')}
-          />
-
-          {/* Past Events on this Route */}
-          <div className="mb-6">
-            <div className="flex items-center justify-between mb-3">
-              <h2 className="font-semibold text-foreground uppercase text-xs tracking-wider text-muted-foreground flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
-                Past Events on this Route
-              </h2>
-              <Button variant="link" size="sm" className="text-primary p-0" asChild>
-                <Link to="/events">See all events</Link>
-              </Button>
-            </div>
-            
-            {pastEvents.length > 0 ? (
-              <div className="space-y-3">
-                {pastEvents.map((event) => (
-                  <Link 
-                    key={event.id} 
-                    to={`/events/${event.id}`}
-                    className="block"
-                  >
-                    <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors">
-                      <img 
-                        src={event.image} 
-                        alt={event.title}
-                        className="w-14 h-14 rounded-lg object-cover flex-shrink-0"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-foreground truncate">{event.title}</p>
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
-                          <span>{event.date}</span>
-                          <span>•</span>
-                          <span>{event.difficulty}</span>
-                        </div>
-                        <div className="flex items-center gap-1 mt-2">
-                          <div className="flex -space-x-2">
-                            {event.attendeeAvatars.slice(0, 3).map((avatar, idx) => (
-                              <Avatar key={idx} className="w-5 h-5 border border-background">
-                                <AvatarImage src={avatar} />
-                                <AvatarFallback className="text-[8px]">U</AvatarFallback>
-                              </Avatar>
-                            ))}
-                          </div>
-                          <span className="text-xs text-muted-foreground ml-1">
-                            {event.attendees} went
-                          </span>
-                        </div>
-                      </div>
-                      <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-6 text-muted-foreground">
-                <Calendar className="w-10 h-10 mx-auto mb-2 opacity-50" />
-                <p className="text-sm">No past events on this route</p>
-              </div>
-            )}
-          </div>
-
-          {/* Comments */}
-          <CommentsSection
-            comments={mockComments}
-            onAddComment={(content) => console.log('Add comment:', content)}
-            onClearAll={() => console.log('Clear all')}
-          />
-
-          {/* Technical Details */}
-          <Card className="p-4 mb-6">
-            <h2 className="font-semibold text-foreground mb-4 flex items-center gap-2 uppercase text-xs tracking-wider text-muted-foreground">
-              <Mountain className="w-4 h-4" />
-              Technical Details
-            </h2>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Technicality Grade</span>
-                <div className="flex items-center gap-2">
-                  <div className={cn(
-                    "w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold",
-                    technicalityColors[route.technicality]
-                  )}>
-                    {route.technicality}
-                  </div>
-                  <span className="text-sm text-foreground">{technicalityDescriptions[route.technicality]}</span>
-                </div>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Difficulty</span>
-                <span className="text-sm font-medium capitalize text-foreground">{route.difficulty}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Route Type</span>
-                <span className="text-sm font-medium text-foreground">{formatRouteType(route.routeType)}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Best Season</span>
-                <span className="text-sm font-medium text-foreground">{formatSeason(route.season)}</span>
-              </div>
-            </div>
-          </Card>
-
-          {/* Facilities */}
-          {route.facilities.length > 0 && (
-            <Card className="p-4 mb-6">
-              <h2 className="font-semibold text-foreground mb-3 uppercase text-xs tracking-wider text-muted-foreground">Facilities</h2>
-              <div className="flex flex-wrap gap-2">
-                {route.facilities.map((facility) => {
-                  const Icon = facilityIcons[facility] || MapPin;
-                  return (
-                    <Badge key={facility} variant="outline" className="gap-1.5 py-1.5">
-                      <Icon className="w-3.5 h-3.5" />
-                      {facility}
-                    </Badge>
-                  );
-                })}
-              </div>
-            </Card>
-          )}
-
-          {/* Accessibility */}
-          {route.accessibility.length > 0 && (
-            <Card className="p-4 mb-6">
-              <h2 className="font-semibold text-foreground mb-3 uppercase text-xs tracking-wider text-muted-foreground">Accessibility</h2>
-              <div className="flex flex-wrap gap-2">
-                {route.accessibility.map((option) => {
-                  const Icon = accessibilityIcons[option] || Accessibility;
-                  return (
-                    <Badge key={option} variant="secondary" className="gap-1.5 py-1.5">
-                      <Icon className="w-3.5 h-3.5" />
-                      {option}
-                    </Badge>
-                  );
-                })}
-              </div>
-            </Card>
-          )}
-
-          {/* Highlights */}
-          {route.highlights.length > 0 && (
-            <div className="mb-6">
-              <h2 className="font-semibold text-foreground mb-3 uppercase text-xs tracking-wider text-muted-foreground">Highlights</h2>
-              <div className="space-y-2">
-                {route.highlights.map((highlight, idx) => (
-                  <div key={idx} className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span className="text-sm text-muted-foreground">{highlight}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </>
+        <DescriptionSection
+          content={route.description}
+        />
       )}
     </DetailViewLayout>
   );
