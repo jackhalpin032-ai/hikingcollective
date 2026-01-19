@@ -1,6 +1,7 @@
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import DetailViewLayout, { 
   OrganizerSection, 
@@ -14,10 +15,13 @@ import MapSection from '@/components/detail/MapSection';
 import GettingThereSection from '@/components/detail/GettingThereSection';
 import { useEventById } from '@/hooks/useEventById';
 import { getEmptyStateCopy } from '@/lib/emptyStates';
+import { irishRoutes } from '@/data/routes';
 import { 
   Train,
   Car,
   Bus,
+  Map,
+  ChevronRight,
 } from 'lucide-react';
 
 // Transport icons mapping
@@ -57,6 +61,9 @@ export default function EventDetail() {
   
   const { data: event, isLoading, error } = useEventById(id);
   const emptyState = getEmptyStateCopy('eventDetail');
+  
+  // Get linked route if event has routeId
+  const linkedRoute = event?.routeId ? irishRoutes.find(r => r.id === event.routeId) : null;
 
   const notFoundContent = (
     <div className="text-center">
@@ -135,6 +142,39 @@ export default function EventDetail() {
   // Left column content
   const leftColumn = event && (
     <>
+      {/* Linked Route Card */}
+      {linkedRoute && (
+        <Card className="p-4 mb-6 bg-primary/5 border-primary/20">
+          <div className="flex items-center gap-2 mb-3">
+            <Map className="w-4 h-4 text-primary" />
+            <h2 className="font-semibold text-foreground text-sm uppercase tracking-wider">Hiking Route</h2>
+          </div>
+          <Link 
+            to={`/routes/${linkedRoute.id}`}
+            className="flex items-center gap-3 hover:bg-primary/10 rounded-lg p-2 -m-2 transition-colors"
+          >
+            <img 
+              src={linkedRoute.thumbnail} 
+              alt={linkedRoute.name}
+              className="w-16 h-16 rounded-lg object-cover flex-shrink-0"
+            />
+            <div className="flex-1 min-w-0">
+              <p className="font-medium text-foreground truncate">{linkedRoute.name}</p>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
+                <span>{linkedRoute.distance}km</span>
+                <span>•</span>
+                <span>{linkedRoute.location}</span>
+                <span>•</span>
+                <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4">
+                  {linkedRoute.technicality}
+                </Badge>
+              </div>
+            </div>
+            <ChevronRight className="w-4 h-4 text-primary flex-shrink-0" />
+          </Link>
+        </Card>
+      )}
+
       {/* Getting There */}
       <GettingThereSection
         meetingPoint={event.meetingPoint}
