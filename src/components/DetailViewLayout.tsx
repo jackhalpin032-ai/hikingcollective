@@ -1,41 +1,282 @@
-import { ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Heart, Share2 } from 'lucide-react';
+import { ReactNode, useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { ArrowLeft, Share2, MoreHorizontal, ThumbsUp, ThumbsDown, Flag, MessageCircle, Send, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Textarea } from '@/components/ui/textarea';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
+// ============ Shared Sub-components ============
+
+interface OrganizerSectionProps {
+  name: string;
+  photo?: string;
+  badge?: string;
+  badgeColor?: string;
+  rating?: number;
+  eventsOrganised?: number;
+  label?: string; // "Organizer" or "Route Creator"
+  onSendMessage?: () => void;
+}
+
+export function OrganizerSection({
+  name,
+  photo,
+  badge,
+  badgeColor = 'bg-primary',
+  rating,
+  eventsOrganised,
+  label = 'Organizer',
+  onSendMessage,
+}: OrganizerSectionProps) {
+  return (
+    <div className="mb-6">
+      <h2 className="font-semibold text-foreground mb-3 uppercase text-xs tracking-wider text-muted-foreground">{label}</h2>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Avatar className="w-12 h-12">
+            <AvatarImage src={photo} alt={name} />
+            <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+              {name.charAt(0)}
+            </AvatarFallback>
+          </Avatar>
+          <div>
+            <p className="font-semibold text-foreground">{name}</p>
+            {badge && (
+              <Badge variant="secondary" className={`text-xs ${badgeColor} text-white`}>
+                {badge}
+              </Badge>
+            )}
+            {rating && eventsOrganised && (
+              <p className="text-xs text-muted-foreground">
+                ⭐ {rating} • {eventsOrganised} events organised
+              </p>
+            )}
+          </div>
+        </div>
+        {onSendMessage && (
+          <Button variant="outline" size="sm" onClick={onSendMessage}>
+            <MessageCircle className="w-4 h-4 mr-2" />
+            Send a message
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ============ Photos from Previous Events ============
+
+interface PhotosFromEventsProps {
+  images: string[];
+  totalCount?: number;
+  onSeeAll?: () => void;
+}
+
+export function PhotosFromEvents({ images, totalCount, onSeeAll }: PhotosFromEventsProps) {
+  const displayImages = images.slice(0, 3);
+  const remaining = totalCount ? totalCount - displayImages.length : 0;
+
+  return (
+    <div className="mb-6">
+      <h2 className="font-semibold text-foreground mb-3 uppercase text-xs tracking-wider text-muted-foreground">
+        Photos from Previous Events
+      </h2>
+      <div className="flex gap-2">
+        {displayImages.map((img, idx) => (
+          <div
+            key={idx}
+            className="relative w-20 h-20 rounded-lg overflow-hidden flex-shrink-0"
+          >
+            <img src={img} alt="" className="w-full h-full object-cover" />
+            {idx === displayImages.length - 1 && remaining > 0 && (
+              <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                <span className="text-white font-semibold text-sm">+{remaining}</span>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+      {onSeeAll && (
+        <Button variant="link" className="p-0 h-auto text-primary text-sm mt-2" onClick={onSeeAll}>
+          See past events <ChevronRight className="w-4 h-4" />
+        </Button>
+      )}
+    </div>
+  );
+}
+
+// ============ Comments Section ============
+
+interface Comment {
+  id: string;
+  author: string;
+  authorPhoto?: string;
+  content: string;
+  likes?: number;
+  dislikes?: number;
+}
+
+interface CommentsSectionProps {
+  comments: Comment[];
+  onAddComment?: (content: string) => void;
+  onClearAll?: () => void;
+}
+
+export function CommentsSection({ comments, onAddComment, onClearAll }: CommentsSectionProps) {
+  const [newComment, setNewComment] = useState('');
+
+  const handleSubmit = () => {
+    if (newComment.trim() && onAddComment) {
+      onAddComment(newComment.trim());
+      setNewComment('');
+    }
+  };
+
+  return (
+    <div className="mb-6">
+      <h2 className="font-semibold text-foreground mb-3 uppercase text-xs tracking-wider text-muted-foreground">
+        Comments
+      </h2>
+      
+      <div className="space-y-4">
+        {comments.map((comment) => (
+          <div key={comment.id} className="flex gap-3">
+            <Avatar className="w-8 h-8 flex-shrink-0">
+              <AvatarImage src={comment.authorPhoto} alt={comment.author} />
+              <AvatarFallback className="bg-muted text-muted-foreground text-xs">
+                {comment.author.charAt(0)}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex-1">
+              <p className="font-medium text-sm text-foreground">{comment.author}</p>
+              <p className="text-sm text-muted-foreground mt-0.5">{comment.content}</p>
+              <div className="flex items-center gap-4 mt-2">
+                <button className="text-muted-foreground hover:text-foreground transition-colors">
+                  <ThumbsUp className="w-4 h-4" />
+                </button>
+                <button className="text-muted-foreground hover:text-foreground transition-colors">
+                  <ThumbsDown className="w-4 h-4" />
+                </button>
+                <button className="text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1 text-xs">
+                  <Flag className="w-3 h-3" />
+                  Report
+                </button>
+                <button className="text-primary text-xs font-medium">Reply</button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Add comment */}
+      <div className="mt-4 pt-4 border-t border-border">
+        <Textarea
+          placeholder="Add a comment..."
+          value={newComment}
+          onChange={(e) => setNewComment(e.target.value)}
+          className="min-h-[60px] resize-none"
+        />
+        <div className="flex items-center justify-between mt-2">
+          {onClearAll && (
+            <Button variant="ghost" size="sm" className="text-muted-foreground" onClick={onClearAll}>
+              Clear all
+            </Button>
+          )}
+          <Button size="sm" onClick={handleSubmit} disabled={!newComment.trim()}>
+            <MessageCircle className="w-4 h-4 mr-2" />
+            Comment
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ============ Description Section ============
+
+interface DescriptionSectionProps {
+  title?: string;
+  content: string;
+  disclaimer?: string;
+  maxLength?: number;
+}
+
+export function DescriptionSection({ title = 'Description', content, disclaimer, maxLength = 200 }: DescriptionSectionProps) {
+  const [expanded, setExpanded] = useState(false);
+  const shouldTruncate = content.length > maxLength;
+  const displayContent = shouldTruncate && !expanded ? content.slice(0, maxLength) + '...' : content;
+
+  return (
+    <div className="mb-6">
+      <h2 className="font-semibold text-foreground mb-2 uppercase text-xs tracking-wider text-muted-foreground">{title}</h2>
+      <p className="text-muted-foreground leading-relaxed text-sm">{displayContent}</p>
+      {shouldTruncate && (
+        <Button
+          variant="link"
+          className="p-0 h-auto text-primary text-sm"
+          onClick={() => setExpanded(!expanded)}
+        >
+          {expanded ? 'Show less' : 'Show more'} ▾
+        </Button>
+      )}
+      {disclaimer && (
+        <Card className="p-3 mt-4 bg-muted/50 border-muted">
+          <p className="text-xs text-muted-foreground italic">
+            <span className="font-semibold">Disclaimer: </span>
+            {disclaimer}
+          </p>
+        </Card>
+      )}
+    </div>
+  );
+}
+
+// ============ Main Layout ============
+
 interface DetailViewLayoutProps {
-  /** Title displayed in the sticky header */
+  /** Date/time line shown at top */
+  dateInfo?: ReactNode;
+  /** Organizer chip shown below date */
+  organizerChip?: ReactNode;
+  /** Main title */
   title: string;
+  /** Quick stats row (activity, distance, elevation, duration) */
+  statsRow?: ReactNode;
+  /** Participants/actions row */
+  participantsRow?: ReactNode;
+  /** Map section */
+  mapSection?: ReactNode;
   /** Main scrollable content */
   children: ReactNode;
   /** Fixed bottom action bar content */
   bottomActions?: ReactNode;
-  /** Loading state content */
+  /** Loading state */
   isLoading?: boolean;
   loadingMessage?: string;
   /** Not found state */
   notFound?: boolean;
   notFoundContent?: ReactNode;
-  /** Optional: hide default action buttons (heart, share) */
-  hideActions?: boolean;
-  /** Optional: custom action buttons to replace defaults */
-  headerActions?: ReactNode;
-  /** Optional: callback when back button is clicked (defaults to navigate(-1)) */
+  /** Optional: callback when back button is clicked */
   onBack?: () => void;
 }
 
 export default function DetailViewLayout({
+  dateInfo,
+  organizerChip,
   title,
+  statsRow,
+  participantsRow,
+  mapSection,
   children,
   bottomActions,
   isLoading = false,
   loadingMessage = 'Loading...',
   notFound = false,
   notFoundContent,
-  hideActions = false,
-  headerActions,
   onBack,
 }: DetailViewLayoutProps) {
   const navigate = useNavigate();
@@ -81,39 +322,72 @@ export default function DetailViewLayout({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-muted/30 to-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       <Header />
       
       <main className="flex-1 pb-24">
-        {/* Sticky header */}
-        <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border/50">
-          <div className="max-w-2xl mx-auto px-4 py-3 flex items-center gap-3">
+        {/* Sticky header bar */}
+        <div className="sticky top-0 z-10 bg-background border-b border-border">
+          <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
             <button 
               onClick={handleBack}
               className="p-2 -ml-2 rounded-full hover:bg-muted transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
-            <div className="flex-1">
-              <h1 className="font-semibold text-foreground truncate">{title}</h1>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm">
+                <Share2 className="w-4 h-4 mr-2" />
+                Share
+              </Button>
+              <Button variant="ghost" size="icon" className="text-muted-foreground">
+                <MoreHorizontal className="w-5 h-5" />
+              </Button>
             </div>
-            {headerActions ? (
-              headerActions
-            ) : !hideActions && (
-              <>
-                <Button variant="ghost" size="icon" className="text-muted-foreground">
-                  <Heart className="w-5 h-5" />
-                </Button>
-                <Button variant="ghost" size="icon" className="text-muted-foreground">
-                  <Share2 className="w-5 h-5" />
-                </Button>
-              </>
-            )}
           </div>
         </div>
 
         {/* Main content */}
-        <div className="max-w-2xl mx-auto px-4 pt-6">
+        <div className="max-w-2xl mx-auto px-4 pt-4">
+          {/* Date info line */}
+          {dateInfo && (
+            <div className="text-sm text-muted-foreground mb-2">
+              {dateInfo}
+            </div>
+          )}
+
+          {/* Organizer/Creator chip */}
+          {organizerChip && (
+            <div className="mb-3">
+              {organizerChip}
+            </div>
+          )}
+
+          {/* Title */}
+          <h1 className="text-xl font-bold text-foreground mb-4">{title}</h1>
+
+          {/* Stats row */}
+          {statsRow && (
+            <div className="mb-4">
+              {statsRow}
+            </div>
+          )}
+
+          {/* Participants/Actions row */}
+          {participantsRow && (
+            <div className="mb-4">
+              {participantsRow}
+            </div>
+          )}
+
+          {/* Map section */}
+          {mapSection && (
+            <div className="mb-6">
+              {mapSection}
+            </div>
+          )}
+
+          {/* Rest of content */}
           {children}
         </div>
       </main>
