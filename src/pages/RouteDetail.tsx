@@ -256,9 +256,15 @@ export default function RouteDetail() {
       {/* Photos from Previous Events */}
       <PhotosFromEvents
         images={mockEventPhotos}
-        totalCount={12}
+        totalCount={pastEvents.length}
         onSeeAll={() => {
-          document.getElementById('past-events')?.scrollIntoView({ behavior: 'smooth' });
+          // Try desktop version first, then mobile
+          const desktopEl = document.getElementById('past-events');
+          const mobileEl = document.getElementById('past-events-mobile');
+          const targetEl = window.innerWidth >= 1024 ? desktopEl : mobileEl;
+          if (targetEl) {
+            targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
         }}
       />
 
@@ -383,6 +389,49 @@ export default function RouteDetail() {
           </div>
         </div>
       )}
+
+      {/* Past Events - shown in left column for mobile/tablet (hidden on desktop where it's in right column) */}
+      <div id="past-events-mobile" className="mb-6 lg:hidden">
+        <h2 className="font-semibold text-foreground mb-4 text-lg">Past Events</h2>
+        
+        {pastEvents.length > 0 ? (
+          <div className="space-y-3">
+            {pastEvents.map((event) => (
+              <Link 
+                key={event.id} 
+                to={`/events/${event.id}`}
+                className="block"
+              >
+                <Card className="p-4 hover:bg-muted/50 transition-colors">
+                  <p className="font-medium text-foreground mb-2">{event.title}</p>
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
+                    <span className="flex items-center gap-1.5">
+                      <Calendar className="w-3.5 h-3.5" />
+                      {event.date}
+                    </span>
+                    <span className="flex items-center gap-1.5">
+                      <Users className="w-3.5 h-3.5" />
+                      {event.attendees}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Avatar className="w-6 h-6">
+                      <AvatarImage src={event.organizerAvatar} alt={event.organizer} />
+                      <AvatarFallback className="text-[10px]">{event.organizer.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <span className="text-sm text-muted-foreground">by {event.organizer}</span>
+                  </div>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <Card className="p-6 text-center text-muted-foreground">
+            <Calendar className="w-10 h-10 mx-auto mb-2 opacity-50" />
+            <p className="text-sm">No past events yet</p>
+          </Card>
+        )}
+      </div>
     </>
   );
 
