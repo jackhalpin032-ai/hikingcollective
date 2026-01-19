@@ -58,6 +58,23 @@ const ChartContainer = React.forwardRef<
 });
 ChartContainer.displayName = "Chart";
 
+// Sanitize CSS color values to prevent injection
+const sanitizeColor = (color: string): string | null => {
+  if (!color || typeof color !== 'string') return null;
+  // Allow only valid CSS color formats: hex, rgb, rgba, hsl, hsla, oklch, named colors
+  const colorPattern = /^(#[0-9a-fA-F]{3,8}|rgba?\(\s*[\d.%,\s]+\)|hsla?\(\s*[\d.%,\s]+\)|oklch\(\s*[\d.%,\s/]+\)|[a-zA-Z]+)$/;
+  const trimmed = color.trim();
+  if (colorPattern.test(trimmed)) {
+    return trimmed;
+  }
+  return null;
+};
+
+// Sanitize CSS key names to alphanumeric and hyphens only
+const sanitizeKey = (key: string): string => {
+  return key.replace(/[^a-zA-Z0-9-]/g, '');
+};
+
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
   const colorConfig = Object.entries(config).filter(([_, config]) => config.theme || config.color);
 
@@ -65,23 +82,26 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
     return null;
   }
 
+  // Build CSS safely with sanitized values
+  const cssRules = Object.entries(THEMES)
+    .map(([theme, prefix]) => {
+      const colorVars = colorConfig
+        .map(([key, itemConfig]) => {
+          const rawColor = itemConfig.theme?.[theme as keyof typeof itemConfig.theme] || itemConfig.color;
+          const color = rawColor ? sanitizeColor(rawColor) : null;
+          const safeKey = sanitizeKey(key);
+          return color ? `  --color-${safeKey}: ${color};` : null;
+        })
+        .filter(Boolean)
+        .join('\n');
+      return `${prefix} [data-chart=${id}] {\n${colorVars}\n}`;
+    })
+    .join('\n');
+
   return (
     <style
       dangerouslySetInnerHTML={{
-        __html: Object.entries(THEMES)
-          .map(
-            ([theme, prefix]) => `
-${prefix} [data-chart=${id}] {
-${colorConfig
-  .map(([key, itemConfig]) => {
-    const color = itemConfig.theme?.[theme as keyof typeof itemConfig.theme] || itemConfig.color;
-    return color ? `  --color-${key}: ${color};` : null;
-  })
-  .join("\n")}
-}
-`,
-          )
-          .join("\n"),
+        __html: cssRules,
       }}
     />
   );

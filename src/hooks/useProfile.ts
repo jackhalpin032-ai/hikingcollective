@@ -87,11 +87,19 @@ const [profile, setProfile] = useState<UserProfile | null>(null);
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        const validated = UserProfileSchema.parse(parsed) as UserProfile;
-        setProfile(validated);
-      } catch (error) {
+      // Use safeParse to handle malformed JSON and validation in one step
+      const parseResult = UserProfileSchema.safeParse((() => {
+        try {
+          return JSON.parse(stored);
+        } catch {
+          // Return null for malformed JSON - safeParse will reject it
+          return null;
+        }
+      })());
+
+      if (parseResult.success) {
+        setProfile(parseResult.data as UserProfile);
+      } else {
         console.error('Invalid profile data in localStorage, resetting to default');
         localStorage.removeItem(STORAGE_KEY);
         setProfile(createJackProfile());
