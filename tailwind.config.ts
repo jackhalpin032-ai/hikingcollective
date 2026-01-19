@@ -18,6 +18,18 @@ export default {
         serif: ["Adamina", "ui-serif", "serif"],
         mono: ["Cousine", "ui-monospace", "monospace"],
       },
+      fontSize: {
+        xs: ["var(--text-xs)", { lineHeight: "1.5" }],
+        sm: ["var(--text-sm)", { lineHeight: "1.5" }],
+        base: ["var(--text-base)", { lineHeight: "1.6" }],
+        lg: ["var(--text-lg)", { lineHeight: "1.5" }],
+        xl: ["var(--text-xl)", { lineHeight: "1.4" }],
+        "2xl": ["var(--text-2xl)", { lineHeight: "1.35" }],
+        "3xl": ["var(--text-3xl)", { lineHeight: "1.3" }],
+        "4xl": ["var(--text-4xl)", { lineHeight: "1.2" }],
+        "5xl": ["var(--text-5xl)", { lineHeight: "1.15" }],
+        "6xl": ["var(--text-6xl)", { lineHeight: "1.1" }],
+      },
       colors: {
         border: "var(--border)",
         input: "var(--input)",
