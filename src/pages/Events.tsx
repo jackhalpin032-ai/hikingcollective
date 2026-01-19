@@ -11,6 +11,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import EventRow from "@/components/EventRow";
 import SidebarEventCard from "@/components/SidebarEventCard";
+import PageTransition from "@/components/PageTransition";
 import { useEvents, useUserEvents } from "@/hooks/useEvents";
 import { locations, activities } from "@/data/events";
 import { getEmptyStateCopy } from "@/lib/emptyStates";
@@ -48,7 +49,8 @@ const Events = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <PageTransition>
+      <div className="min-h-screen flex flex-col bg-background">
       <Header />
 
       <main className="flex-1 container max-w-7xl mx-auto px-6 py-8">
@@ -193,7 +195,8 @@ const Events = () => {
       </main>
 
       <Footer />
-    </div>
+      </div>
+    </PageTransition>
   );
 };
 
