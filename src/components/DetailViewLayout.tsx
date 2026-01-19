@@ -1,5 +1,5 @@
 import { ReactNode, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { X, Share2, ThumbsUp, ThumbsDown, Flag, MessageCircle, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -351,14 +351,24 @@ export default function DetailViewLayout({
         {/* Header bar */}
         <div className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur-sm">
           <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3">
-            <div className="flex items-center gap-4">
+            {/* Logo - links to homepage */}
+            <Link to="/" className="flex items-center gap-2">
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M14 2L4 10L4 24H24V10L14 2Z" fill="hsl(var(--primary))" />
+                <path d="M10 18C10 16 12 14 14 14C16 14 18 16 18 18" stroke="hsl(var(--warning))" strokeWidth="2" strokeLinecap="round" />
+                <circle cx="14" cy="10" r="2" fill="hsl(var(--warning))" />
+              </svg>
+              <span className="text-xl font-bold italic text-primary hidden sm:block">The Hiking Collective</span>
+            </Link>
+            
+            <div className="flex items-center gap-3">
               <Button variant="outline" size="sm">
                 <Share2 className="w-4 h-4 mr-2" />
                 Share
               </Button>
+              {/* Spacer for close button */}
+              <div className="w-10" />
             </div>
-            {/* Spacer for close button */}
-            <div className="w-10" />
           </div>
         </div>
 
