@@ -337,77 +337,84 @@ export default function DetailViewLayout({
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-background overflow-hidden flex flex-col">
-      {/* Header bar */}
-      <div className="flex-shrink-0 border-b border-border bg-background">
-        <div className="flex items-center justify-between px-6 py-3">
-          <div className="flex items-center gap-4">
-            <Button variant="outline" size="sm">
-              <Share2 className="w-4 h-4 mr-2" />
-              Share
-            </Button>
+    <div className="fixed inset-0 z-50 bg-background overflow-y-auto">
+      {/* Close button - fixed in top right */}
+      <button
+        onClick={handleClose}
+        className="fixed top-4 right-4 z-[60] p-2 rounded-full bg-background/80 backdrop-blur-sm border border-border hover:bg-muted transition-colors shadow-lg"
+      >
+        <X className="w-6 h-6" />
+      </button>
+
+      {/* Main content with page scrolling */}
+      <div className="min-h-full">
+        {/* Header bar */}
+        <div className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur-sm">
+          <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3">
+            <div className="flex items-center gap-4">
+              <Button variant="outline" size="sm">
+                <Share2 className="w-4 h-4 mr-2" />
+                Share
+              </Button>
+            </div>
+            {/* Spacer for close button */}
+            <div className="w-10" />
           </div>
-          <button
-            onClick={handleClose}
-            className="p-2 rounded-full hover:bg-muted transition-colors"
-          >
-            <X className="w-6 h-6" />
-          </button>
         </div>
-      </div>
 
-      {/* Main 3-column layout */}
-      <div className="flex-1 overflow-hidden">
-        <div className="h-full grid grid-cols-1 lg:grid-cols-3 gap-0">
-          {/* Left Column - Event/Route Info */}
-          <div className="overflow-y-auto border-r border-border p-6">
-            {/* Date info line */}
-            {dateInfo && (
-              <div className="text-sm text-muted-foreground mb-2">
-                {dateInfo}
-              </div>
-            )}
+        {/* Main 3-column layout */}
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-0">
+            {/* Left Column - Event/Route Info */}
+            <div className="lg:border-r border-border p-6">
+              {/* Date info line */}
+              {dateInfo && (
+                <div className="text-sm text-muted-foreground mb-2">
+                  {dateInfo}
+                </div>
+              )}
 
-            {/* Organizer/Creator chip */}
-            {organizerChip && (
-              <div className="mb-3">
-                {organizerChip}
-              </div>
-            )}
+              {/* Organizer/Creator chip */}
+              {organizerChip && (
+                <div className="mb-3">
+                  {organizerChip}
+                </div>
+              )}
 
-            {/* Title */}
-            <h1 className="text-2xl font-bold text-foreground mb-4">{title}</h1>
+              {/* Title */}
+              <h1 className="text-2xl font-bold text-foreground mb-4">{title}</h1>
 
-            {/* Stats row */}
-            {statsRow && (
-              <div className="mb-4">
-                {statsRow}
-              </div>
-            )}
+              {/* Stats row */}
+              {statsRow && (
+                <div className="mb-4">
+                  {statsRow}
+                </div>
+              )}
 
-            {/* Participants/Actions row */}
-            {participantsRow && (
-              <div className="mb-4">
-                {participantsRow}
-              </div>
-            )}
+              {/* Participants/Actions row */}
+              {participantsRow && (
+                <div className="mb-4">
+                  {participantsRow}
+                </div>
+              )}
 
-            {/* Left column specific content or fallback to children */}
-            {leftColumn || children}
-          </div>
+              {/* Left column specific content or fallback to children */}
+              {leftColumn || children}
+            </div>
 
-          {/* Center Column - Map */}
-          <div className="overflow-y-auto border-r border-border p-6 bg-muted/30 hidden lg:block">
-            {mapSection && (
-              <div className="sticky top-0">
-                {mapSection}
-              </div>
-            )}
-          </div>
+            {/* Center Column - Map */}
+            <div className="lg:border-r border-border p-6 bg-muted/30 hidden lg:block">
+              {mapSection && (
+                <div className="lg:sticky lg:top-20">
+                  {mapSection}
+                </div>
+              )}
+            </div>
 
-          {/* Right Column - Comments/Discussion */}
-          <div className="overflow-y-auto p-6 hidden lg:block">
-            {rightColumn}
+            {/* Right Column - Comments/Discussion */}
+            <div className="p-6 hidden lg:block">
+              {rightColumn}
+            </div>
           </div>
         </div>
       </div>
