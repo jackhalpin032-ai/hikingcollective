@@ -18,7 +18,6 @@ import {
   Train,
   Car,
   Bus,
-  MessageCircle,
 } from 'lucide-react';
 
 // Transport icons mapping
@@ -67,7 +66,6 @@ export default function EventDetail() {
     </div>
   );
 
-  const spotsLeft = event ? event.maxParticipants - event.currentParticipants : 0;
   const TransportIcon = event ? (transportIcons[event.transport] || Train) : Train;
 
   // Build date info line
@@ -128,47 +126,55 @@ export default function EventDetail() {
   const mapSection = event && (
     <MapSection
       imageUrl={event.image}
-      routeId="wicklow-way" // Would come from event data in real app
+      routeId="wicklow-way"
       showRouteLink={true}
       showDownloadGpx={true}
     />
   );
 
-  // Bottom actions based on status
-  const bottomActions = event && (
+  // Left column content
+  const leftColumn = event && (
     <>
-      {event.status === 'going' ? (
-        <>
-          <Button variant="outline" className="flex-1 text-destructive border-destructive hover:bg-destructive/10">
-            Unjoin Event
-          </Button>
-          <Button className="flex-1">
-            <MessageCircle className="w-4 h-4 mr-2" />
-            Message Group
-          </Button>
-        </>
-      ) : event.status === 'organiser' ? (
-        <>
-          <Button variant="outline" className="flex-1">
-            Edit Event
-          </Button>
-          <Button className="flex-1">
-            <MessageCircle className="w-4 h-4 mr-2" />
-            Message Group
-          </Button>
-        </>
-      ) : (
-        <>
-          <Button variant="outline" className="flex-1">
-            <MessageCircle className="w-4 h-4 mr-2" />
-            Ask Question
-          </Button>
-          <Button className="flex-1">
-            Join Event
-          </Button>
-        </>
-      )}
+      {/* Getting There */}
+      <GettingThereSection
+        meetingPoint={event.meetingPoint}
+        mapLink="https://www.google.com/maps"
+        price="5 EUR"
+      />
+
+      {/* Description */}
+      <DescriptionSection
+        content={event.description}
+        disclaimer="Hiking can be dangerous. I am not a mountain guide. Everybody is responsible for her/himself. Make yourself familiar with the route and its requirements. It's recommended to download a map and bring a cell phone and first aid kit for emergencies."
+      />
+
+      {/* Organizer */}
+      <OrganizerSection
+        name={event.organizer.name}
+        photo={event.organizer.photo}
+        badge="Trail Rookie"
+        badgeColor="bg-emerald-500"
+        rating={event.organizer.rating}
+        eventsOrganised={event.organizer.eventsOrganised}
+        onSendMessage={() => console.log('Send message')}
+      />
+
+      {/* Photos from Previous Events */}
+      <PhotosFromEvents
+        images={mockEventPhotos}
+        totalCount={12}
+        onSeeAll={() => navigate('/events')}
+      />
     </>
+  );
+
+  // Right column - comments
+  const rightColumn = (
+    <CommentsSection
+      comments={mockComments}
+      onAddComment={(content) => console.log('Add comment:', content)}
+      onClearAll={() => console.log('Clear all')}
+    />
   );
 
   return (
@@ -179,51 +185,25 @@ export default function EventDetail() {
       statsRow={statsRow}
       participantsRow={participantsRow}
       mapSection={mapSection}
+      leftColumn={leftColumn}
+      rightColumn={rightColumn}
       isLoading={isLoading}
       loadingMessage="Loading event..."
       notFound={!!error || !event}
       notFoundContent={notFoundContent}
-      bottomActions={bottomActions}
-      onBack={() => navigate('/events')}
+      onClose={() => navigate('/events')}
     >
+      {/* Fallback content for mobile single-column view */}
       {event && (
         <>
-          {/* Getting There */}
           <GettingThereSection
             meetingPoint={event.meetingPoint}
             mapLink="https://www.google.com/maps"
             price="5 EUR"
           />
-
-          {/* Description */}
           <DescriptionSection
             content={event.description}
-            disclaimer="Hiking can be dangerous. I am not a mountain guide. Everybody is responsible for her/himself. Make yourself familiar with the route and its requirements. It's recommended to download a map and bring a cell phone and first aid kit for emergencies."
-          />
-
-          {/* Organizer */}
-          <OrganizerSection
-            name={event.organizer.name}
-            photo={event.organizer.photo}
-            badge="Trail Rookie"
-            badgeColor="bg-emerald-500"
-            rating={event.organizer.rating}
-            eventsOrganised={event.organizer.eventsOrganised}
-            onSendMessage={() => console.log('Send message')}
-          />
-
-          {/* Photos from Previous Events */}
-          <PhotosFromEvents
-            images={mockEventPhotos}
-            totalCount={12}
-            onSeeAll={() => navigate('/events')}
-          />
-
-          {/* Comments */}
-          <CommentsSection
-            comments={mockComments}
-            onAddComment={(content) => console.log('Add comment:', content)}
-            onClearAll={() => console.log('Clear all')}
+            disclaimer="Hiking can be dangerous."
           />
         </>
       )}

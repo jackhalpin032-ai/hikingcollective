@@ -1,13 +1,11 @@
-import { ReactNode, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, Share2, MoreHorizontal, ThumbsUp, ThumbsDown, Flag, MessageCircle, Send, ChevronRight } from 'lucide-react';
+import { ReactNode, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { X, Share2, ThumbsUp, ThumbsDown, Flag, MessageCircle, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 
 // ============ Shared Sub-components ============
 
@@ -18,7 +16,7 @@ interface OrganizerSectionProps {
   badgeColor?: string;
   rating?: number;
   eventsOrganised?: number;
-  label?: string; // "Organizer" or "Route Creator"
+  label?: string;
   onSendMessage?: () => void;
 }
 
@@ -172,7 +170,6 @@ export function CommentsSection({ comments, onAddComment, onClearAll }: Comments
         ))}
       </div>
 
-      {/* Add comment */}
       <div className="mt-4 pt-4 border-t border-border">
         <Textarea
           placeholder="Add a comment..."
@@ -248,20 +245,22 @@ interface DetailViewLayoutProps {
   statsRow?: ReactNode;
   /** Participants/actions row */
   participantsRow?: ReactNode;
-  /** Map section */
+  /** Map section - appears in center column */
   mapSection?: ReactNode;
-  /** Main scrollable content */
+  /** Left column content */
+  leftColumn?: ReactNode;
+  /** Right column content (comments, etc.) */
+  rightColumn?: ReactNode;
+  /** Main scrollable content (fallback for single column) */
   children: ReactNode;
-  /** Fixed bottom action bar content */
-  bottomActions?: ReactNode;
   /** Loading state */
   isLoading?: boolean;
   loadingMessage?: string;
   /** Not found state */
   notFound?: boolean;
   notFoundContent?: ReactNode;
-  /** Optional: callback when back button is clicked */
-  onBack?: () => void;
+  /** Optional: callback when close button is clicked */
+  onClose?: () => void;
 }
 
 export default function DetailViewLayout({
@@ -271,33 +270,47 @@ export default function DetailViewLayout({
   statsRow,
   participantsRow,
   mapSection,
+  leftColumn,
+  rightColumn,
   children,
-  bottomActions,
   isLoading = false,
   loadingMessage = 'Loading...',
   notFound = false,
   notFoundContent,
-  onBack,
+  onClose,
 }: DetailViewLayoutProps) {
   const navigate = useNavigate();
 
-  const handleBack = () => {
-    if (onBack) {
-      onBack();
+  // Prevent body scroll when modal is open
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
+
+  const handleClose = () => {
+    if (onClose) {
+      onClose();
     } else {
       navigate(-1);
     }
   };
 
+  // Handle escape key
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') handleClose();
+    };
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, []);
+
   // Loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background flex flex-col">
-        <Header />
-        <main className="flex-1 flex items-center justify-center">
-          <div className="animate-pulse text-muted-foreground">{loadingMessage}</div>
-        </main>
-        <Footer />
+      <div className="fixed inset-0 z-50 bg-background flex items-center justify-center">
+        <div className="animate-pulse text-muted-foreground">{loadingMessage}</div>
       </div>
     );
   }
@@ -305,103 +318,99 @@ export default function DetailViewLayout({
   // Not found state
   if (notFound) {
     return (
-      <div className="min-h-screen bg-background flex flex-col">
-        <Header />
-        <main className="flex-1 flex items-center justify-center">
-          {notFoundContent || (
-            <div className="text-center">
-              <h1 className="text-2xl font-bold text-foreground mb-2">Not Found</h1>
-              <p className="text-muted-foreground mb-4">The requested item could not be found.</p>
-              <Button onClick={handleBack}>Go Back</Button>
-            </div>
-          )}
-        </main>
-        <Footer />
+      <div className="fixed inset-0 z-50 bg-background flex items-center justify-center">
+        <button
+          onClick={handleClose}
+          className="absolute top-4 right-4 p-2 rounded-full hover:bg-muted transition-colors"
+        >
+          <X className="w-6 h-6" />
+        </button>
+        {notFoundContent || (
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-foreground mb-2">Not Found</h1>
+            <p className="text-muted-foreground mb-4">The requested item could not be found.</p>
+            <Button onClick={handleClose}>Go Back</Button>
+          </div>
+        )}
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <Header />
-      
-      <main className="flex-1 pb-24">
-        {/* Sticky header bar */}
-        <div className="sticky top-0 z-10 bg-background border-b border-border">
-          <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
-            <button 
-              onClick={handleBack}
-              className="p-2 -ml-2 rounded-full hover:bg-muted transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </button>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm">
-                <Share2 className="w-4 h-4 mr-2" />
-                Share
-              </Button>
-              <Button variant="ghost" size="icon" className="text-muted-foreground">
-                <MoreHorizontal className="w-5 h-5" />
-              </Button>
-            </div>
+    <div className="fixed inset-0 z-50 bg-background overflow-hidden flex flex-col">
+      {/* Header bar */}
+      <div className="flex-shrink-0 border-b border-border bg-background">
+        <div className="flex items-center justify-between px-6 py-3">
+          <div className="flex items-center gap-4">
+            <Button variant="outline" size="sm">
+              <Share2 className="w-4 h-4 mr-2" />
+              Share
+            </Button>
+          </div>
+          <button
+            onClick={handleClose}
+            className="p-2 rounded-full hover:bg-muted transition-colors"
+          >
+            <X className="w-6 h-6" />
+          </button>
+        </div>
+      </div>
+
+      {/* Main 3-column layout */}
+      <div className="flex-1 overflow-hidden">
+        <div className="h-full grid grid-cols-1 lg:grid-cols-3 gap-0">
+          {/* Left Column - Event/Route Info */}
+          <div className="overflow-y-auto border-r border-border p-6">
+            {/* Date info line */}
+            {dateInfo && (
+              <div className="text-sm text-muted-foreground mb-2">
+                {dateInfo}
+              </div>
+            )}
+
+            {/* Organizer/Creator chip */}
+            {organizerChip && (
+              <div className="mb-3">
+                {organizerChip}
+              </div>
+            )}
+
+            {/* Title */}
+            <h1 className="text-2xl font-bold text-foreground mb-4">{title}</h1>
+
+            {/* Stats row */}
+            {statsRow && (
+              <div className="mb-4">
+                {statsRow}
+              </div>
+            )}
+
+            {/* Participants/Actions row */}
+            {participantsRow && (
+              <div className="mb-4">
+                {participantsRow}
+              </div>
+            )}
+
+            {/* Left column specific content or fallback to children */}
+            {leftColumn || children}
+          </div>
+
+          {/* Center Column - Map */}
+          <div className="overflow-y-auto border-r border-border p-6 bg-muted/30 hidden lg:block">
+            {mapSection && (
+              <div className="sticky top-0">
+                {mapSection}
+              </div>
+            )}
+          </div>
+
+          {/* Right Column - Comments/Discussion */}
+          <div className="overflow-y-auto p-6 hidden lg:block">
+            {rightColumn}
           </div>
         </div>
-
-        {/* Main content */}
-        <div className="max-w-2xl mx-auto px-4 pt-4">
-          {/* Date info line */}
-          {dateInfo && (
-            <div className="text-sm text-muted-foreground mb-2">
-              {dateInfo}
-            </div>
-          )}
-
-          {/* Organizer/Creator chip */}
-          {organizerChip && (
-            <div className="mb-3">
-              {organizerChip}
-            </div>
-          )}
-
-          {/* Title */}
-          <h1 className="text-xl font-bold text-foreground mb-4">{title}</h1>
-
-          {/* Stats row */}
-          {statsRow && (
-            <div className="mb-4">
-              {statsRow}
-            </div>
-          )}
-
-          {/* Participants/Actions row */}
-          {participantsRow && (
-            <div className="mb-4">
-              {participantsRow}
-            </div>
-          )}
-
-          {/* Map section */}
-          {mapSection && (
-            <div className="mb-6">
-              {mapSection}
-            </div>
-          )}
-
-          {/* Rest of content */}
-          {children}
-        </div>
-      </main>
-
-      {/* Fixed bottom action bar */}
-      {bottomActions && (
-        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-sm border-t border-border p-4">
-          <div className="max-w-2xl mx-auto flex gap-3">
-            {bottomActions}
-          </div>
-        </div>
-      )}
-
-      <Footer />
+      </div>
     </div>
   );
 }
