@@ -1,5 +1,6 @@
 import { ChevronRight } from "lucide-react";
 import EventCard from "./EventCard";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const events = [
   {
@@ -57,11 +58,13 @@ const events = [
 ];
 
 const EventsSection = () => {
+  const { t } = useLanguage();
+
   return (
     <section className="py-12 bg-muted/50" id="events">
       <div className="container">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl md:text-2xl font-bold">Upcoming events</h2>
+          <h2 className="text-xl md:text-2xl font-bold">{t.events.title}</h2>
         </div>
 
         {/* Events carousel */}
@@ -81,10 +84,10 @@ const EventsSection = () => {
         {/* Explore link */}
         <div className="flex justify-end mt-6">
           <a
-            href="#"
+            href="/events"
             className="text-sm font-medium text-primary hover:underline underline-offset-4"
           >
-            Explore more routes
+            {t.events.viewAll}
           </a>
         </div>
       </div>
