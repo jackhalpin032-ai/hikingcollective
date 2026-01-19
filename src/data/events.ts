@@ -41,6 +41,7 @@ export const eventRows: EventRow[] = [
       "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=face",
       "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face",
     ],
+    routeId: "carrauntoohil",
   },
   {
     id: 2,
@@ -87,6 +88,7 @@ export const eventRows: EventRow[] = [
       "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
       "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
     ],
+    routeId: "glendalough-spinc",
   },
   {
     id: 4,
@@ -154,6 +156,7 @@ export const eventRows: EventRow[] = [
       "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face",
       "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
     ],
+    routeId: "croagh-patrick",
   },
 ];
 

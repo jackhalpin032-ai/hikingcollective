@@ -141,11 +141,11 @@ const mockEventPhotos = [
   'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=200&h=200&fit=crop',
 ];
 
-// Get past events for this route
+// Get past events linked to this specific route
 function getPastEventsForRoute(routeId: string) {
-  return eventRows.slice(0, 3).map((event, idx) => ({
+  const linkedEvents = eventRows.filter(event => event.routeId === routeId);
+  return linkedEvents.map((event, idx) => ({
     ...event,
-    linkedRouteId: routeId,
     date: idx === 0 ? '2 weeks ago' : idx === 1 ? 'Dec 15' : 'Nov 28',
     isPast: true,
   }));
