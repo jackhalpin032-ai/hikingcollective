@@ -203,8 +203,8 @@ export function CreateEventModal({ isOpen, onClose }: CreateEventModalProps) {
               className={cn(
                 "fixed z-50 bg-background rounded-xl shadow-2xl border border-border overflow-hidden flex flex-col",
                 isCompactStep
-                  ? "inset-4 md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-[90vw] md:max-w-2xl md:h-auto md:max-h-[85vh]"
-                  : "inset-2 md:inset-4 lg:inset-8"
+                  ? "left-4 right-4 top-4 bottom-4 md:left-1/2 md:right-auto md:top-1/2 md:bottom-auto md:-translate-x-1/2 md:-translate-y-1/2 md:w-[90vw] md:max-w-2xl md:max-h-[85vh]"
+                  : "left-2 right-2 top-2 bottom-2 md:left-4 md:right-4 md:top-4 md:bottom-4 lg:left-8 lg:right-8 lg:top-8 lg:bottom-8"
               )}
             >
               {/* Header */}
