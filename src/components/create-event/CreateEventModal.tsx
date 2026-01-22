@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X, ArrowLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
@@ -177,65 +178,84 @@ export function CreateEventModal({ isOpen, onClose }: CreateEventModalProps) {
 
   if (!isOpen) return null;
 
-  return (
+  const modalContent = (
     <>
       <AnimatePresence>
         {isOpen && (
-          <motion.div
-            key="modal"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50 flex flex-col bg-background"
-          >
-            {/* Header */}
-            <header className="flex items-center justify-between h-14 px-4 md:px-6 bg-muted border-b border-border flex-shrink-0">
-              <div className="flex items-center gap-4">
-                {currentStep > 1 && (
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={handleBack}
-                    className="h-8 w-8"
-                  >
-                    <ArrowLeft className="h-4 w-4" />
-                    <span className="sr-only">Back</span>
-                  </Button>
-                )}
-                <StepIndicator currentStep={currentStep} totalSteps={getTotalSteps()} />
-              </div>
+          <>
+            {/* Backdrop */}
+            <motion.div
+              key="backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm"
+              style={{ zIndex: 9998 }}
+              onClick={handleClose}
+            />
+            
+            {/* Modal */}
+            <motion.div
+              key="modal"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 flex flex-col bg-background"
+              style={{ zIndex: 9999 }}
+            >
+              {/* Header */}
+              <header className="flex items-center justify-between h-14 px-4 md:px-6 bg-muted border-b border-border flex-shrink-0">
+                <div className="flex items-center gap-4">
+                  {currentStep > 1 && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={handleBack}
+                      className="h-8 w-8"
+                    >
+                      <ArrowLeft className="h-4 w-4" />
+                      <span className="sr-only">Back</span>
+                    </Button>
+                  )}
+                  <StepIndicator currentStep={currentStep} totalSteps={getTotalSteps()} />
+                </div>
 
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleClose}
-                className="rounded-full h-9 w-9 bg-background hover:bg-muted border border-border"
-              >
-                <X className="h-4 w-4" />
-                <span className="sr-only">Close</span>
-              </Button>
-            </header>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleClose}
+                  className="rounded-full h-9 w-9 bg-background hover:bg-muted border border-border"
+                >
+                  <X className="h-4 w-4" />
+                  <span className="sr-only">Close</span>
+                </Button>
+              </header>
 
-            {/* Content */}
-            <main className="flex-1 overflow-auto">
-              <div className="max-w-2xl mx-auto p-6 md:p-8 lg:p-12">
-                <AnimatePresence mode="wait" custom={direction}>
-                  <motion.div
-                    key={currentStep}
-                    custom={direction}
-                    variants={stepVariants}
-                    initial="enter"
-                    animate="center"
-                    exit="exit"
-                    transition={{ duration: 0.2, ease: 'easeInOut' }}
-                  >
-                    {getStepContent()}
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-            </main>
-          </motion.div>
+              {/* Content */}
+              <main className="flex-1 overflow-auto">
+                <div className={cn(
+                  "mx-auto p-6 md:p-8 lg:p-12",
+                  isCompactStep ? "max-w-2xl" : "max-w-full"
+                )}>
+                  <AnimatePresence mode="wait" custom={direction}>
+                    <motion.div
+                      key={currentStep}
+                      custom={direction}
+                      variants={stepVariants}
+                      initial="enter"
+                      animate="center"
+                      exit="exit"
+                      transition={{ duration: 0.2, ease: 'easeInOut' }}
+                    >
+                      {getStepContent()}
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+              </main>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
 
@@ -247,4 +267,6 @@ export function CreateEventModal({ isOpen, onClose }: CreateEventModalProps) {
       />
     </>
   );
+
+  return createPortal(modalContent, document.body);
 }
