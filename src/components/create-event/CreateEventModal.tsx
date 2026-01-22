@@ -192,21 +192,27 @@ export function CreateEventModal({ isOpen, onClose }: CreateEventModalProps) {
               onClick={handleClose}
             />
 
-            {/* Modal container */}
-            <motion.div
-              key="modal"
-              variants={modalVariants}
-              initial="hidden"
-              animate="visible"
-              exit="hidden"
-              transition={{ duration: 0.2, ease: 'easeOut' }}
+            {/* Modal wrapper for centering */}
+            <div 
               className={cn(
-                "fixed z-50 bg-background rounded-xl shadow-2xl border border-border overflow-hidden flex flex-col",
-                isCompactStep
-                  ? "left-4 right-4 top-4 bottom-4 md:left-1/2 md:right-auto md:top-1/2 md:bottom-auto md:-translate-x-1/2 md:-translate-y-1/2 md:w-[90vw] md:max-w-2xl md:max-h-[85vh]"
-                  : "left-2 right-2 top-2 bottom-2 md:left-4 md:right-4 md:top-4 md:bottom-4 lg:left-8 lg:right-8 lg:top-8 lg:bottom-8"
+                "fixed inset-0 z-50 flex items-center justify-center p-4",
+                !isCompactStep && "md:p-4 lg:p-8"
               )}
             >
+              <motion.div
+                key="modal"
+                variants={modalVariants}
+                initial="hidden"
+                animate="visible"
+                exit="hidden"
+                transition={{ duration: 0.2, ease: 'easeOut' }}
+                className={cn(
+                  "bg-background rounded-xl shadow-2xl border border-border overflow-hidden flex flex-col w-full h-full",
+                  isCompactStep
+                    ? "md:w-auto md:min-w-[500px] md:max-w-2xl md:h-auto md:max-h-[85vh]"
+                    : "max-w-[1800px]"
+                )}
+              >
               {/* Header */}
               <header className="flex items-center justify-between h-14 px-4 md:px-6 border-b border-border bg-background flex-shrink-0">
                 <div className="flex items-center gap-4">
@@ -256,6 +262,7 @@ export function CreateEventModal({ isOpen, onClose }: CreateEventModalProps) {
                 </AnimatePresence>
               </main>
             </motion.div>
+            </div>
           </>
         )}
       </AnimatePresence>
