@@ -1,6 +1,7 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import { Loader2 } from 'lucide-react';
 
 interface StepEventDetailsProps {
   eventName: string;
@@ -8,6 +9,8 @@ interface StepEventDetailsProps {
   onEventNameChange: (name: string) => void;
   onMaxParticipantsChange: (count: number | null) => void;
   onSubmit: () => void;
+  isSubmitting?: boolean;
+  onBack?: () => void;
 }
 
 export function StepEventDetails({
@@ -16,6 +19,8 @@ export function StepEventDetails({
   onEventNameChange,
   onMaxParticipantsChange,
   onSubmit,
+  isSubmitting = false,
+  onBack,
 }: StepEventDetailsProps) {
   const isValid = eventName.trim().length > 0;
 
@@ -25,7 +30,7 @@ export function StepEventDetails({
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full min-h-[calc(100vh-8rem)]">
       <div className="flex-1 space-y-6">
         <div className="text-center space-y-2 mb-8">
           <h2 className="text-2xl font-bold text-foreground">
@@ -47,6 +52,7 @@ export function StepEventDetails({
               value={eventName}
               onChange={(e) => onEventNameChange(e.target.value)}
               className="w-full"
+              disabled={isSubmitting}
             />
           </div>
 
@@ -62,6 +68,7 @@ export function StepEventDetails({
               value={maxParticipants ?? ''}
               onChange={(e) => handleParticipantsChange(e.target.value)}
               className="w-full"
+              disabled={isSubmitting}
             />
             <p className="text-xs text-muted-foreground">
               Leave empty for unlimited spots.
@@ -70,14 +77,34 @@ export function StepEventDetails({
         </div>
       </div>
 
-      <div className="pt-6 border-t border-border mt-6">
-        <Button
-          onClick={onSubmit}
-          disabled={!isValid}
-          className="w-full"
-        >
-          Create Event
-        </Button>
+      {/* Sticky Footer */}
+      <div className="sticky bottom-0 bg-background border-t border-border py-4 -mx-6 md:-mx-8 lg:-mx-12 px-6 md:px-8 lg:px-12 mt-6">
+        <div className="max-w-md mx-auto flex justify-between gap-4">
+          {onBack && (
+            <Button
+              variant="outline"
+              onClick={onBack}
+              disabled={isSubmitting}
+              className="px-8"
+            >
+              Back
+            </Button>
+          )}
+          <Button
+            onClick={onSubmit}
+            disabled={!isValid || isSubmitting}
+            className={onBack ? "flex-1" : "w-full"}
+          >
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Creating...
+              </>
+            ) : (
+              'Create Event'
+            )}
+          </Button>
+        </div>
       </div>
     </div>
   );

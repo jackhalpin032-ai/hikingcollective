@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { X, ArrowLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useCreateEventForm } from './useCreateEventForm';
@@ -13,6 +14,8 @@ import { StepEventDetails } from './StepEventDetails';
 import { DiscardConfirmDialog } from './DiscardConfirmDialog';
 import { ACTIVITIES_WITH_ROUTE } from './types';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
+import { irishRoutes } from '@/data/routes';
 
 interface CreateEventModalProps {
   isOpen: boolean;
@@ -47,6 +50,7 @@ const modalVariants = {
 export function CreateEventModal({ isOpen, onClose }: CreateEventModalProps) {
   const [showDiscardDialog, setShowDiscardDialog] = useState(false);
   const [direction, setDirection] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     formData,
@@ -99,11 +103,63 @@ export function CreateEventModal({ isOpen, onClose }: CreateEventModalProps) {
     goToNextStep();
   };
 
-  const handleSubmit = () => {
-    // For now, just show success and close
-    toast.success('Event created successfully!');
-    clearFormData();
-    onClose();
+  const handleSubmit = async () => {
+    if (!formData.date || !formData.time || !formData.eventName || !formData.activityType) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Get route details if a route was selected
+      const selectedRoute = formData.routeId 
+        ? irishRoutes.find(r => r.id === formData.routeId) 
+        : null;
+
+      // Format date for database
+      const eventDate = format(formData.date, 'yyyy-MM-dd');
+      const dateLabel = format(formData.date, 'EEE, MMM d');
+
+      // Build the event record
+      const eventRecord = {
+        title: formData.eventName,
+        activity: formData.activityType,
+        event_date: eventDate,
+        date_label: dateLabel,
+        time: formData.time === 'TBC' ? 'TBC' : formData.time,
+        route_id: formData.routeId,
+        available_spots: formData.maxParticipants,
+        // Use route data if available, otherwise use sensible defaults
+        difficulty: selectedRoute?.difficulty || 'moderate',
+        distance: selectedRoute ? `${selectedRoute.distance} km` : 'TBD',
+        duration: selectedRoute ? `${Math.round(selectedRoute.duration / 60)}h` : 'TBD',
+        elevation: selectedRoute?.technicality || 'N/A',
+        departure_location: selectedRoute?.location || 'TBD',
+        transport_method: 'Carpool',
+        organizer: 'You',
+        image: selectedRoute?.thumbnail || 'https://images.unsplash.com/photo-1551632811-561732d1e306?w=800&q=80',
+        attendees: 0,
+        is_past: false,
+      };
+
+      const { error } = await supabase.from('events').insert(eventRecord);
+
+      if (error) {
+        console.error('Error creating event:', error);
+        toast.error('Failed to create event. Please try again.');
+        return;
+      }
+
+      toast.success('Event created successfully! 🎉');
+      clearFormData();
+      onClose();
+    } catch (err) {
+      console.error('Error creating event:', err);
+      toast.error('Something went wrong. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // Check if activity requires route selection
@@ -169,6 +225,8 @@ export function CreateEventModal({ isOpen, onClose }: CreateEventModalProps) {
             onEventNameChange={(eventName) => updateFormData({ eventName })}
             onMaxParticipantsChange={(maxParticipants) => updateFormData({ maxParticipants })}
             onSubmit={handleSubmit}
+            isSubmitting={isSubmitting}
+            onBack={handleBack}
           />
         );
       default:
