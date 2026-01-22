@@ -6,6 +6,8 @@ const INITIAL_FORM_DATA: CreateEventFormData = {
   routeId: null,
   date: null,
   time: '',
+  eventName: '',
+  maxParticipants: null,
 };
 
 export function useCreateEventForm() {
@@ -47,13 +49,15 @@ export function useCreateEventForm() {
   }, []);
 
   const hasUnsavedChanges = Boolean(
-    formData.activityType || formData.date || formData.time || formData.routeId
+    formData.activityType || formData.date || formData.time || formData.routeId || formData.eventName || formData.maxParticipants
   );
 
   // Calculate total steps based on activity type
+  // With route: Activity(1) → Route(2) → DateTime(3) → Details(4) = 4 steps
+  // Without route: Activity(1) → DateTime(2) → Details(3) = 3 steps
   const getTotalSteps = useCallback(() => {
-    if (!formData.activityType) return 3;
-    return ACTIVITIES_WITH_ROUTE.includes(formData.activityType) ? 3 : 2;
+    if (!formData.activityType) return 4;
+    return ACTIVITIES_WITH_ROUTE.includes(formData.activityType) ? 4 : 3;
   }, [formData.activityType]);
 
   // Navigate to next step with logic for skipping route selection

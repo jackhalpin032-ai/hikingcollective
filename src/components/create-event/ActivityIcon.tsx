@@ -12,7 +12,7 @@ export function ActivityIcon({ type, className = "h-8 w-8" }: ActivityIconProps)
       return <PersonStanding className={className} />;
     case 'cycling':
       return <Bike className={className} />;
-    case 'climbing':
+    case 'via-ferrata':
       return <Mountain className={className} />;
     case 'skiing':
       return <Snowflake className={className} />;
