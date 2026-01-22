@@ -195,9 +195,10 @@ export function CreateEventModal({ isOpen, onClose }: CreateEventModalProps) {
             {/* Modal wrapper for centering */}
             <div 
               className={cn(
-                "fixed inset-0 z-50 flex items-center justify-center p-4",
+                "fixed inset-0 z-[51] flex items-center justify-center p-4",
                 !isCompactStep && "md:p-4 lg:p-8"
               )}
+              onClick={handleClose}
             >
               <motion.div
                 key="modal"
@@ -208,7 +209,7 @@ export function CreateEventModal({ isOpen, onClose }: CreateEventModalProps) {
                 transition={{ duration: 0.2, ease: 'easeOut' }}
                 onClick={(e) => e.stopPropagation()}
                 className={cn(
-                  "rounded-xl shadow-2xl overflow-hidden flex flex-col w-full h-full",
+                  "bg-background border border-border rounded-xl shadow-2xl overflow-hidden flex flex-col w-full h-full",
                   isCompactStep
                     ? "md:w-auto md:min-w-[520px] md:max-w-2xl md:h-auto md:max-h-[90vh]"
                     : "max-w-[1800px]"
