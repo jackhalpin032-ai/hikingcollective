@@ -49,17 +49,17 @@ export function StepDateTime({ date, time, onDateChange, onTimeChange, onContinu
   const isComplete = date && time;
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="text-center mb-8">
-        <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
+    <div className="flex flex-col">
+      <div className="text-center mb-6">
+        <h2 className="text-xl md:text-2xl font-bold text-foreground mb-2">
           When are you heading out? ⏰
         </h2>
-        <p className="text-muted-foreground">
-          Pick a date and time that works for your crew. Early starts mean cooler trails and fewer crowds!
+        <p className="text-sm text-muted-foreground">
+          Pick a date and time that works for your crew. Early starts mean cooler trails!
         </p>
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center gap-8 max-w-md mx-auto w-full">
+      <div className="flex flex-col gap-5 max-w-md mx-auto w-full">
         {/* Date Picker */}
         <div className="w-full">
           <label className="block text-sm font-medium text-foreground mb-2">
@@ -70,15 +70,15 @@ export function StepDateTime({ date, time, onDateChange, onTimeChange, onContinu
               <Button
                 variant="outline"
                 className={cn(
-                  "w-full justify-start text-left font-normal h-12",
+                  "w-full justify-start text-left font-normal h-11",
                   !date && "text-muted-foreground"
                 )}
               >
-                <CalendarIcon className="mr-2 h-5 w-5" />
+                <CalendarIcon className="mr-2 h-4 w-4" />
                 {date ? format(date, "EEEE, MMMM d, yyyy") : "Choose a date"}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="center">
+            <PopoverContent className="w-auto p-0 z-[60]" align="center">
               <Calendar
                 mode="single"
                 selected={date ?? undefined}
@@ -100,13 +100,13 @@ export function StepDateTime({ date, time, onDateChange, onTimeChange, onContinu
             Set a meeting time
           </label>
           <Select value={time} onValueChange={onTimeChange}>
-            <SelectTrigger className="w-full h-12">
+            <SelectTrigger className="w-full h-11">
               <div className="flex items-center">
-                <Clock className="mr-2 h-5 w-5 text-muted-foreground" />
+                <Clock className="mr-2 h-4 w-4 text-muted-foreground" />
                 <SelectValue placeholder="Choose a time" />
               </div>
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="z-[60]">
               {TIME_SLOTS.map(({ value, label, icon: Icon, period }) => (
                 <SelectItem key={value} value={value}>
                   <div className="flex items-center gap-2">
@@ -122,7 +122,7 @@ export function StepDateTime({ date, time, onDateChange, onTimeChange, onContinu
 
         {/* Friendly tip */}
         {date && time && (
-          <div className="w-full p-4 rounded-lg bg-primary/10 border border-primary/20 animate-fade-in">
+          <div className="w-full p-3 rounded-lg bg-primary/10 border border-primary/20 animate-fade-in">
             <p className="text-sm text-primary font-medium text-center">
               🌄 Great choice! {format(date, "EEEE")} at {TIME_SLOTS.find(t => t.value === time)?.label} — 
               perfect for beating the crowds!
@@ -131,12 +131,12 @@ export function StepDateTime({ date, time, onDateChange, onTimeChange, onContinu
         )}
       </div>
 
-      <div className="mt-8 flex justify-center">
+      <div className="mt-6 pt-4 border-t border-border flex justify-end">
         <Button 
-          size="lg" 
+          size="default" 
           onClick={onContinue}
           disabled={!isComplete}
-          className="px-12"
+          className="px-8"
         >
           Continue
         </Button>
