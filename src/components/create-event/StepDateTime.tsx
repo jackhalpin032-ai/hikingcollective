@@ -27,6 +27,7 @@ interface StepDateTimeProps {
 }
 
 const TIME_SLOTS = [
+  { value: 'TBC', label: 'To be confirmed' },
   { value: '05:00', label: '05:00' },
   { value: '05:30', label: '05:30' },
   { value: '06:00', label: '06:00' },
@@ -56,6 +57,10 @@ const TIME_SLOTS = [
   { value: '18:00', label: '18:00' },
   { value: '18:30', label: '18:30' },
   { value: '19:00', label: '19:00' },
+  { value: '19:30', label: '19:30' },
+  { value: '20:00', label: '20:00' },
+  { value: '20:30', label: '20:30' },
+  { value: '21:00', label: '21:00' },
 ];
 
 export function StepDateTime({ date, time, onDateChange, onTimeChange, onContinue, onBack }: StepDateTimeProps) {
@@ -63,8 +68,9 @@ export function StepDateTime({ date, time, onDateChange, onTimeChange, onContinu
   
   const isComplete = date && time;
 
-  // Format the time for display (e.g., "08:30" -> "08:30")
+  // Format the time for display
   const formatTimeDisplay = (timeValue: string) => {
+    if (timeValue === 'TBC') return 'To be confirmed';
     return timeValue;
   };
 
@@ -100,7 +106,7 @@ export function StepDateTime({ date, time, onDateChange, onTimeChange, onContinu
                 {date ? format(date, "EEEE, MMMM do, yyyy") : "Select a date"}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0 z-[60]" align="start">
+            <PopoverContent className="w-auto p-0 bg-popover border border-border shadow-lg" style={{ zIndex: 10000 }} align="start">
               <Calendar
                 mode="single"
                 selected={date ?? undefined}
@@ -130,7 +136,7 @@ export function StepDateTime({ date, time, onDateChange, onTimeChange, onContinu
                 </SelectValue>
               </div>
             </SelectTrigger>
-            <SelectContent className="z-[60] max-h-60">
+            <SelectContent className="max-h-60 bg-popover border border-border shadow-lg" style={{ zIndex: 10000 }}>
               {TIME_SLOTS.map(({ value, label }) => (
                 <SelectItem key={value} value={value}>
                   {label}
@@ -145,7 +151,7 @@ export function StepDateTime({ date, time, onDateChange, onTimeChange, onContinu
       {isComplete && (
         <div className="w-full p-4 rounded-lg border border-border bg-card mb-6 animate-fade-in">
           <p className="text-sm text-emerald-600 font-medium">
-            🎉 Awesome! Your adventure is set for {format(date, "EEEE, MMMM do")} at {time}
+            🎉 Awesome! Your adventure is set for {format(date, "EEEE, MMMM do")}{time === 'TBC' ? ' (time to be confirmed)' : ` at ${time}`}
           </p>
         </div>
       )}
