@@ -8,8 +8,10 @@ import { StepIndicator } from './StepIndicator';
 import { StepActivityType } from './StepActivityType';
 import { StepRouteSelection } from './StepRouteSelection';
 import { StepDateTime } from './StepDateTime';
+import { StepEventDetails } from './StepEventDetails';
 import { DiscardConfirmDialog } from './DiscardConfirmDialog';
 import { ACTIVITIES_WITH_ROUTE } from './types';
+import { toast } from 'sonner';
 
 interface CreateEventModalProps {
   isOpen: boolean;
@@ -96,43 +98,79 @@ export function CreateEventModal({ isOpen, onClose }: CreateEventModalProps) {
     goToNextStep();
   };
 
-  // Check if current step is compact (activity or date/time) vs full-width (route selection)
-  const isCompactStep = currentStep === 1 || 
-    (currentStep === 3) || 
-    (currentStep === 2 && formData.activityType && !ACTIVITIES_WITH_ROUTE.includes(formData.activityType));
+  const handleSubmit = () => {
+    // For now, just show success and close
+    toast.success('Event created successfully!');
+    clearFormData();
+    onClose();
+  };
 
-  // Determine which step to show based on current step and activity type
+  // Check if activity requires route selection
+  const requiresRoute = formData.activityType && ACTIVITIES_WITH_ROUTE.includes(formData.activityType);
+  
+  // Determine the actual step type based on activity
+  // With route: 1=Activity, 2=Route, 3=DateTime, 4=Details
+  // Without route: 1=Activity, 2=DateTime, 3=Details
+  const getLogicalStep = () => {
+    if (currentStep === 1) return 'activity';
+    if (requiresRoute) {
+      if (currentStep === 2) return 'route';
+      if (currentStep === 3) return 'datetime';
+      if (currentStep === 4) return 'details';
+    } else {
+      if (currentStep === 2) return 'datetime';
+      if (currentStep === 3) return 'details';
+    }
+    return 'activity';
+  };
+
+  const logicalStep = getLogicalStep();
+  
+  // Check if current step is compact vs full-width (route selection is full-width)
+  const isCompactStep = logicalStep !== 'route';
+
+  // Determine which step to show based on logical step
   const getStepContent = () => {
-    if (currentStep === 1) {
-      return (
-        <StepActivityType
-          selectedActivity={formData.activityType}
-          onSelect={(activity) => updateFormData({ activityType: activity })}
-          onContinue={handleContinue}
-        />
-      );
+    switch (logicalStep) {
+      case 'activity':
+        return (
+          <StepActivityType
+            selectedActivity={formData.activityType}
+            onSelect={(activity) => updateFormData({ activityType: activity })}
+            onContinue={handleContinue}
+          />
+        );
+      case 'route':
+        return (
+          <StepRouteSelection 
+            selectedRouteId={formData.routeId}
+            onSelect={(routeId) => updateFormData({ routeId })}
+            onContinue={handleContinue} 
+          />
+        );
+      case 'datetime':
+        return (
+          <StepDateTime
+            date={formData.date}
+            time={formData.time}
+            onDateChange={(date) => updateFormData({ date: date ?? null })}
+            onTimeChange={(time) => updateFormData({ time })}
+            onContinue={handleContinue}
+          />
+        );
+      case 'details':
+        return (
+          <StepEventDetails
+            eventName={formData.eventName}
+            maxParticipants={formData.maxParticipants}
+            onEventNameChange={(eventName) => updateFormData({ eventName })}
+            onMaxParticipantsChange={(maxParticipants) => updateFormData({ maxParticipants })}
+            onSubmit={handleSubmit}
+          />
+        );
+      default:
+        return null;
     }
-    
-    if (currentStep === 2 && formData.activityType && ACTIVITIES_WITH_ROUTE.includes(formData.activityType)) {
-      return (
-        <StepRouteSelection 
-          selectedRouteId={formData.routeId}
-          onSelect={(routeId) => updateFormData({ routeId })}
-          onContinue={handleContinue} 
-        />
-      );
-    }
-    
-    // Step 3 or Step 2 for activities without route
-    return (
-      <StepDateTime
-        date={formData.date}
-        time={formData.time}
-        onDateChange={(date) => updateFormData({ date: date ?? null })}
-        onTimeChange={(time) => updateFormData({ time })}
-        onContinue={handleContinue}
-      />
-    );
   };
 
   if (!isOpen) return null;
