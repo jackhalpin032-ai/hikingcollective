@@ -14,7 +14,87 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      events: {
+        Row: {
+          activity: string
+          attendee_avatars: string[] | null
+          attendees: number
+          available_spots: number | null
+          created_at: string
+          date_label: string
+          departure_location: string
+          difficulty: string
+          distance: string
+          duration: string
+          elevation: string
+          event_date: string
+          id: string
+          image: string
+          is_past: boolean
+          organizer: string
+          organizer_avatar: string | null
+          route_id: string | null
+          time: string
+          title: string
+          total_height: string | null
+          transport_method: string
+          updated_at: string
+          waitlist: number | null
+        }
+        Insert: {
+          activity: string
+          attendee_avatars?: string[] | null
+          attendees?: number
+          available_spots?: number | null
+          created_at?: string
+          date_label: string
+          departure_location: string
+          difficulty: string
+          distance: string
+          duration: string
+          elevation: string
+          event_date: string
+          id?: string
+          image: string
+          is_past?: boolean
+          organizer: string
+          organizer_avatar?: string | null
+          route_id?: string | null
+          time: string
+          title: string
+          total_height?: string | null
+          transport_method: string
+          updated_at?: string
+          waitlist?: number | null
+        }
+        Update: {
+          activity?: string
+          attendee_avatars?: string[] | null
+          attendees?: number
+          available_spots?: number | null
+          created_at?: string
+          date_label?: string
+          departure_location?: string
+          difficulty?: string
+          distance?: string
+          duration?: string
+          elevation?: string
+          event_date?: string
+          id?: string
+          image?: string
+          is_past?: boolean
+          organizer?: string
+          organizer_avatar?: string | null
+          route_id?: string | null
+          time?: string
+          title?: string
+          total_height?: string | null
+          transport_method?: string
+          updated_at?: string
+          waitlist?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
