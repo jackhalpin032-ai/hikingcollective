@@ -23,6 +23,7 @@ interface StepDateTimeProps {
   onDateChange: (date: Date | undefined) => void;
   onTimeChange: (time: string) => void;
   onContinue: () => void;
+  onBack?: () => void;
 }
 
 const TIME_SLOTS = [
@@ -57,7 +58,7 @@ const TIME_SLOTS = [
   { value: '19:00', label: '19:00' },
 ];
 
-export function StepDateTime({ date, time, onDateChange, onTimeChange, onContinue }: StepDateTimeProps) {
+export function StepDateTime({ date, time, onDateChange, onTimeChange, onContinue, onBack }: StepDateTimeProps) {
   const [calendarOpen, setCalendarOpen] = useState(false);
   
   const isComplete = date && time;
@@ -149,16 +150,28 @@ export function StepDateTime({ date, time, onDateChange, onTimeChange, onContinu
         </div>
       )}
 
-      {/* Continue Button */}
-      <div className="flex justify-end">
-        <Button 
-          size="lg" 
-          onClick={onContinue}
-          disabled={!isComplete}
-          className="px-12 h-12"
-        >
-          Continue
-        </Button>
+      {/* Footer Buttons */}
+      <div className="flex justify-between">
+        {onBack && (
+          <Button 
+            variant="outline"
+            size="lg" 
+            onClick={onBack}
+            className="px-8 h-12"
+          >
+            Back
+          </Button>
+        )}
+        <div className={!onBack ? "ml-auto" : ""}>
+          <Button 
+            size="lg" 
+            onClick={onContinue}
+            disabled={!isComplete}
+            className="px-12 h-12"
+          >
+            Continue
+          </Button>
+        </div>
       </div>
     </div>
   );

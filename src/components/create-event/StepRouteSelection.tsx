@@ -20,6 +20,7 @@ interface StepRouteSelectionProps {
   selectedRouteId: string | null;
   onSelect: (routeId: string | null) => void;
   onContinue: () => void;
+  onBack?: () => void;
 }
 
 type SortOption = 'name-asc' | 'name-desc' | 'distance-asc' | 'distance-desc' | 'duration-asc' | 'duration-desc';
@@ -37,7 +38,7 @@ const initialFilters: FilterState = {
   season: [],
 };
 
-export function StepRouteSelection({ selectedRouteId, onSelect, onContinue }: StepRouteSelectionProps) {
+export function StepRouteSelection({ selectedRouteId, onSelect, onContinue, onBack }: StepRouteSelectionProps) {
   const [filters, setFilters] = useState<FilterState>(initialFilters);
   const [sortBy, setSortBy] = useState<SortOption>('name-asc');
   const isMobile = useIsMobile();
@@ -272,28 +273,40 @@ export function StepRouteSelection({ selectedRouteId, onSelect, onContinue }: St
       {/* Footer with selection info and continue button */}
       <div className="sticky bottom-0 bg-background border-t px-4 md:px-8 py-4 mt-4">
         <div className="flex items-center justify-between gap-4 max-w-4xl mx-auto">
-          <div className="flex items-center gap-3 min-w-0">
-            {selectedRoute ? (
-              <>
-                <img 
-                  src={selectedRoute.thumbnail} 
-                  alt={selectedRoute.name}
-                  className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
-                />
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-foreground truncate">
-                    {selectedRoute.name}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
-                    {selectedRoute.distance} km • {selectedRoute.location}
-                  </p>
-                </div>
-              </>
-            ) : (
-              <p className="text-sm text-muted-foreground">
-                No route selected (optional)
-              </p>
+          <div className="flex items-center gap-4">
+            {onBack && (
+              <Button 
+                variant="outline"
+                size="lg" 
+                onClick={onBack}
+                className="px-8"
+              >
+                Back
+              </Button>
             )}
+            <div className="flex items-center gap-3 min-w-0">
+              {selectedRoute ? (
+                <>
+                  <img 
+                    src={selectedRoute.thumbnail} 
+                    alt={selectedRoute.name}
+                    className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+                  />
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-foreground truncate">
+                      {selectedRoute.name}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {selectedRoute.distance} km • {selectedRoute.location}
+                    </p>
+                  </div>
+                </>
+              ) : (
+                <p className="text-sm text-muted-foreground">
+                  No route selected (optional)
+                </p>
+              )}
+            </div>
           </div>
           <Button 
             size="lg" 

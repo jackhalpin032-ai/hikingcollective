@@ -145,7 +145,8 @@ export function CreateEventModal({ isOpen, onClose }: CreateEventModalProps) {
           <StepRouteSelection 
             selectedRouteId={formData.routeId}
             onSelect={(routeId) => updateFormData({ routeId })}
-            onContinue={handleContinue} 
+            onContinue={handleContinue}
+            onBack={handleBack}
           />
         );
       case 'datetime':
@@ -156,6 +157,7 @@ export function CreateEventModal({ isOpen, onClose }: CreateEventModalProps) {
             onDateChange={(date) => updateFormData({ date: date ?? null })}
             onTimeChange={(time) => updateFormData({ time })}
             onContinue={handleContinue}
+            onBack={handleBack}
           />
         );
       case 'details':
