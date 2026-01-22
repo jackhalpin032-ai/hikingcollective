@@ -87,7 +87,13 @@ export function CreateEventModal({ isOpen, onClose }: CreateEventModalProps) {
     }
     
     if (currentStep === 2 && formData.activityType && ACTIVITIES_WITH_ROUTE.includes(formData.activityType)) {
-      return <StepRouteSelection onContinue={handleContinue} />;
+      return (
+        <StepRouteSelection 
+          selectedRouteId={formData.routeId}
+          onSelect={(routeId) => updateFormData({ routeId })}
+          onContinue={handleContinue} 
+        />
+      );
     }
     
     // Step 3 or Step 2 for activities without route
@@ -145,7 +151,7 @@ export function CreateEventModal({ isOpen, onClose }: CreateEventModalProps) {
 
         {/* Content */}
         <main className="flex-1 overflow-auto p-4 md:p-8">
-          <div className="max-w-4xl mx-auto min-h-[calc(100vh-10rem)]">
+          <div className="max-w-7xl mx-auto min-h-[calc(100vh-10rem)]">
             <AnimatePresence mode="wait" custom={direction}>
               <motion.div
                 key={currentStep}
