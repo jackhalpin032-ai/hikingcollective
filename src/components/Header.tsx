@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, X, User, ChevronDown } from "lucide-react";
+import { Search, X, User, ChevronDown, Plus } from "lucide-react";
 import { Button } from "./ui/button";
 import { useProfile } from "@/hooks/useProfile";
 import { Input } from "./ui/input";
@@ -15,15 +15,15 @@ import {
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { CreateEventModal } from "./create-event";
 import jackPhoto from "@/assets/jack-profile.jpeg";
-
 const Header = () => {
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showCreateModal, setShowCreateModal] = useState(false);
   const navigate = useNavigate();
   const { profile } = useProfile();
   const { t } = useLanguage();
-
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -61,8 +61,14 @@ const Header = () => {
           <a href="#community" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
             {t.nav.community}
           </a>
-          <Button variant="outline" size="sm" className="font-semibold" asChild>
-            <Link to="/events">{t.nav.createEvent}</Link>
+          <Button 
+            variant="default" 
+            size="sm" 
+            className="font-semibold gap-2"
+            onClick={() => setShowCreateModal(true)}
+          >
+            <Plus className="h-4 w-4" />
+            {t.nav.createEvent}
           </Button>
         </nav>
 
@@ -142,6 +148,11 @@ const Header = () => {
           )}
         </div>
       </div>
+
+      <CreateEventModal 
+        isOpen={showCreateModal} 
+        onClose={() => setShowCreateModal(false)} 
+      />
     </header>
   );
 };
