@@ -188,7 +188,7 @@ export function CreateEventModal({ isOpen, onClose }: CreateEventModalProps) {
               animate="visible"
               exit="hidden"
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm"
+              className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
               onClick={handleClose}
             />
 
@@ -206,62 +206,61 @@ export function CreateEventModal({ isOpen, onClose }: CreateEventModalProps) {
                 animate="visible"
                 exit="hidden"
                 transition={{ duration: 0.2, ease: 'easeOut' }}
+                onClick={(e) => e.stopPropagation()}
                 className={cn(
-                  "bg-background rounded-xl shadow-2xl border border-border overflow-hidden flex flex-col w-full h-full",
+                  "rounded-xl shadow-2xl overflow-hidden flex flex-col w-full h-full",
                   isCompactStep
-                    ? "md:w-auto md:min-w-[500px] md:max-w-2xl md:h-auto md:max-h-[85vh]"
+                    ? "md:w-auto md:min-w-[520px] md:max-w-2xl md:h-auto md:max-h-[90vh]"
                     : "max-w-[1800px]"
                 )}
               >
-              {/* Header */}
-              <header className="flex items-center justify-between h-14 px-4 md:px-6 border-b border-border bg-background flex-shrink-0">
-                <div className="flex items-center gap-4">
-                  {currentStep > 1 && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={handleBack}
-                      className="gap-2"
-                    >
-                      <ArrowLeft className="h-4 w-4" />
-                      <span className="hidden sm:inline">Back</span>
-                    </Button>
-                  )}
-                  <h1 className="text-lg font-semibold text-foreground">Create Event</h1>
-                </div>
+                {/* Header - Warm taupe background */}
+                <header className="flex items-center justify-between h-14 px-4 md:px-6 bg-[hsl(var(--muted))] border-b border-border flex-shrink-0">
+                  <div className="flex items-center gap-4">
+                    {currentStep > 1 && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={handleBack}
+                        className="h-8 w-8"
+                      >
+                        <ArrowLeft className="h-4 w-4" />
+                        <span className="sr-only">Back</span>
+                      </Button>
+                    )}
+                    <StepIndicator currentStep={currentStep} totalSteps={getTotalSteps()} />
+                  </div>
 
-                <div className="flex items-center gap-4">
-                  <StepIndicator currentStep={currentStep} totalSteps={getTotalSteps()} />
                   <Button
                     variant="ghost"
                     size="icon"
                     onClick={handleClose}
-                    className="rounded-full hover:bg-muted"
+                    className="rounded-full h-9 w-9 bg-background hover:bg-muted border border-border"
                   >
-                    <X className="h-5 w-5" />
+                    <X className="h-4 w-4" />
                     <span className="sr-only">Close</span>
                   </Button>
-                </div>
-              </header>
+                </header>
 
-              {/* Content */}
-              <main className="flex-1 overflow-auto p-4 md:p-6">
-                <AnimatePresence mode="wait" custom={direction}>
-                  <motion.div
-                    key={currentStep}
-                    custom={direction}
-                    variants={stepVariants}
-                    initial="enter"
-                    animate="center"
-                    exit="exit"
-                    transition={{ duration: 0.2, ease: 'easeInOut' }}
-                    className="h-full"
-                  >
-                    {getStepContent()}
-                  </motion.div>
-                </AnimatePresence>
-              </main>
-            </motion.div>
+                {/* Content - Light background */}
+                <main className="flex-1 overflow-auto bg-background">
+                  <div className="p-4 md:p-6 lg:p-8">
+                    <AnimatePresence mode="wait" custom={direction}>
+                      <motion.div
+                        key={currentStep}
+                        custom={direction}
+                        variants={stepVariants}
+                        initial="enter"
+                        animate="center"
+                        exit="exit"
+                        transition={{ duration: 0.2, ease: 'easeInOut' }}
+                      >
+                        {getStepContent()}
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
+                </main>
+              </motion.div>
             </div>
           </>
         )}
