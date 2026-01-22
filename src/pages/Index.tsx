@@ -5,13 +5,11 @@ import Mission from "@/components/Mission";
 import EventsSection from "@/components/EventsSection";
 import Footer from "@/components/Footer";
 import PageTransition from "@/components/PageTransition";
-import WelcomeBanner from "@/components/WelcomeBanner";
 
 const Index = () => {
   return (
     <PageTransition>
       <div className="min-h-screen flex flex-col">
-        <WelcomeBanner />
         <Header />
         <main className="flex-1">
           <Hero />
