@@ -11,39 +11,49 @@ interface StepActivityTypeProps {
 
 export function StepActivityType({ selectedActivity, onSelect, onContinue }: StepActivityTypeProps) {
   return (
-    <div className="flex flex-col">
-      <div className="text-center mb-6">
-        <h2 className="text-xl md:text-2xl font-bold text-foreground mb-2">
-          What adventure are you planning? 🎒
+    <div className="flex flex-col items-center py-6 md:py-10">
+      {/* Header */}
+      <div className="text-center mb-8 max-w-md">
+        <h2 className="text-2xl md:text-3xl font-serif font-medium text-foreground mb-3">
+          What adventure are you planning?
         </h2>
-        <p className="text-sm text-muted-foreground">
-          Pick an activity type to get started. You can always change this later!
+        <p className="text-muted-foreground">
+          Pick an activity and let's get your crew together! 🎉
         </p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-w-xl mx-auto w-full">
+      {/* Activity Grid - 3x2 */}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 w-full max-w-lg mb-8">
         {ACTIVITY_OPTIONS.map(({ type, label }) => (
           <button
             key={type}
             onClick={() => onSelect(type)}
             className={cn(
-              "flex flex-col items-center justify-center gap-2 p-4 md:p-5 rounded-xl border-2 transition-all duration-200",
-              "hover:border-primary hover:bg-primary/5 hover:scale-[1.02]",
+              "flex flex-col items-center justify-center gap-3 p-5 md:p-6 rounded-xl border transition-all duration-200",
+              "hover:border-primary/50 hover:shadow-sm",
               "focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
               selectedActivity === type
-                ? "border-primary bg-primary/10 shadow-md"
+                ? "border-primary bg-primary/5 shadow-sm"
                 : "border-border bg-card"
             )}
           >
-            <ActivityIcon 
-              type={type} 
-              className={cn(
-                "h-8 w-8 transition-colors",
-                selectedActivity === type ? "text-primary" : "text-muted-foreground"
-              )} 
-            />
+            {/* Icon in circular background */}
+            <div className={cn(
+              "flex items-center justify-center w-12 h-12 rounded-full transition-colors",
+              selectedActivity === type
+                ? "bg-primary/20"
+                : "bg-muted"
+            )}>
+              <ActivityIcon 
+                type={type} 
+                className={cn(
+                  "h-6 w-6 transition-colors",
+                  selectedActivity === type ? "text-primary" : "text-muted-foreground"
+                )} 
+              />
+            </div>
             <span className={cn(
-              "font-medium",
+              "font-medium text-sm",
               selectedActivity === type ? "text-primary" : "text-foreground"
             )}>
               {label}
@@ -52,16 +62,15 @@ export function StepActivityType({ selectedActivity, onSelect, onContinue }: Ste
         ))}
       </div>
 
-      <div className="mt-6 pt-4 border-t border-border flex justify-end">
-        <Button 
-          size="default" 
-          onClick={onContinue}
-          disabled={!selectedActivity}
-          className="px-8"
-        >
-          Continue
-        </Button>
-      </div>
+      {/* Continue Button */}
+      <Button 
+        size="lg" 
+        onClick={onContinue}
+        disabled={!selectedActivity}
+        className="px-12 h-12"
+      >
+        Continue
+      </Button>
     </div>
   );
 }

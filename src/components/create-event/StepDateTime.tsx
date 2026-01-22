@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
-import { CalendarIcon, Clock, Sun, Sunrise, Sunset, Moon } from 'lucide-react';
+import { CalendarIcon, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -26,21 +26,35 @@ interface StepDateTimeProps {
 }
 
 const TIME_SLOTS = [
-  { value: '05:00', label: '5:00 AM', icon: Sunrise, period: 'Early bird' },
-  { value: '06:00', label: '6:00 AM', icon: Sunrise, period: 'Early bird' },
-  { value: '07:00', label: '7:00 AM', icon: Sunrise, period: 'Morning' },
-  { value: '08:00', label: '8:00 AM', icon: Sun, period: 'Morning' },
-  { value: '09:00', label: '9:00 AM', icon: Sun, period: 'Morning' },
-  { value: '10:00', label: '10:00 AM', icon: Sun, period: 'Morning' },
-  { value: '11:00', label: '11:00 AM', icon: Sun, period: 'Late morning' },
-  { value: '12:00', label: '12:00 PM', icon: Sun, period: 'Noon' },
-  { value: '13:00', label: '1:00 PM', icon: Sun, period: 'Afternoon' },
-  { value: '14:00', label: '2:00 PM', icon: Sun, period: 'Afternoon' },
-  { value: '15:00', label: '3:00 PM', icon: Sunset, period: 'Afternoon' },
-  { value: '16:00', label: '4:00 PM', icon: Sunset, period: 'Late afternoon' },
-  { value: '17:00', label: '5:00 PM', icon: Sunset, period: 'Evening' },
-  { value: '18:00', label: '6:00 PM', icon: Moon, period: 'Evening' },
-  { value: '19:00', label: '7:00 PM', icon: Moon, period: 'Evening' },
+  { value: '05:00', label: '05:00' },
+  { value: '05:30', label: '05:30' },
+  { value: '06:00', label: '06:00' },
+  { value: '06:30', label: '06:30' },
+  { value: '07:00', label: '07:00' },
+  { value: '07:30', label: '07:30' },
+  { value: '08:00', label: '08:00' },
+  { value: '08:30', label: '08:30' },
+  { value: '09:00', label: '09:00' },
+  { value: '09:30', label: '09:30' },
+  { value: '10:00', label: '10:00' },
+  { value: '10:30', label: '10:30' },
+  { value: '11:00', label: '11:00' },
+  { value: '11:30', label: '11:30' },
+  { value: '12:00', label: '12:00' },
+  { value: '12:30', label: '12:30' },
+  { value: '13:00', label: '13:00' },
+  { value: '13:30', label: '13:30' },
+  { value: '14:00', label: '14:00' },
+  { value: '14:30', label: '14:30' },
+  { value: '15:00', label: '15:00' },
+  { value: '15:30', label: '15:30' },
+  { value: '16:00', label: '16:00' },
+  { value: '16:30', label: '16:30' },
+  { value: '17:00', label: '17:00' },
+  { value: '17:30', label: '17:30' },
+  { value: '18:00', label: '18:00' },
+  { value: '18:30', label: '18:30' },
+  { value: '19:00', label: '19:00' },
 ];
 
 export function StepDateTime({ date, time, onDateChange, onTimeChange, onContinue }: StepDateTimeProps) {
@@ -48,37 +62,44 @@ export function StepDateTime({ date, time, onDateChange, onTimeChange, onContinu
   
   const isComplete = date && time;
 
+  // Format the time for display (e.g., "08:30" -> "08:30")
+  const formatTimeDisplay = (timeValue: string) => {
+    return timeValue;
+  };
+
   return (
-    <div className="flex flex-col">
-      <div className="text-center mb-6">
-        <h2 className="text-xl md:text-2xl font-bold text-foreground mb-2">
-          When are you heading out? ⏰
+    <div className="flex flex-col py-6 md:py-10 max-w-2xl mx-auto w-full">
+      {/* Header - Left aligned like reference */}
+      <div className="mb-8">
+        <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+          When are you heading out?
         </h2>
-        <p className="text-sm text-muted-foreground">
-          Pick a date and time that works for your crew. Early starts mean cooler trails!
+        <p className="text-muted-foreground">
+          Pick a date and time that works for you and your crew. Don't worry, you can always adjust later! 📅
         </p>
       </div>
 
-      <div className="flex flex-col gap-5 max-w-md mx-auto w-full">
+      {/* Date and Time side by side */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         {/* Date Picker */}
         <div className="w-full">
           <label className="block text-sm font-medium text-foreground mb-2">
-            Pick a date
+            Date
           </label>
           <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
                 className={cn(
-                  "w-full justify-start text-left font-normal h-11",
+                  "w-full justify-start text-left font-normal h-12",
                   !date && "text-muted-foreground"
                 )}
               >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {date ? format(date, "EEEE, MMMM d, yyyy") : "Choose a date"}
+                <CalendarIcon className="mr-3 h-4 w-4 text-muted-foreground" />
+                {date ? format(date, "EEEE, MMMM do, yyyy") : "Select a date"}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0 z-[60]" align="center">
+            <PopoverContent className="w-auto p-0 z-[60]" align="start">
               <Calendar
                 mode="single"
                 selected={date ?? undefined}
@@ -86,7 +107,7 @@ export function StepDateTime({ date, time, onDateChange, onTimeChange, onContinu
                   onDateChange(newDate);
                   setCalendarOpen(false);
                 }}
-                disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                disabled={(d) => d < new Date(new Date().setHours(0, 0, 0, 0))}
                 initialFocus
                 className={cn("p-3 pointer-events-auto")}
               />
@@ -97,46 +118,44 @@ export function StepDateTime({ date, time, onDateChange, onTimeChange, onContinu
         {/* Time Picker */}
         <div className="w-full">
           <label className="block text-sm font-medium text-foreground mb-2">
-            Set a meeting time
+            Start time
           </label>
           <Select value={time} onValueChange={onTimeChange}>
-            <SelectTrigger className="w-full h-11">
+            <SelectTrigger className="w-full h-12">
               <div className="flex items-center">
-                <Clock className="mr-2 h-4 w-4 text-muted-foreground" />
-                <SelectValue placeholder="Choose a time" />
+                <Clock className="mr-3 h-4 w-4 text-muted-foreground" />
+                <SelectValue placeholder="Select time">
+                  {time ? formatTimeDisplay(time) : "Select time"}
+                </SelectValue>
               </div>
             </SelectTrigger>
-            <SelectContent className="z-[60]">
-              {TIME_SLOTS.map(({ value, label, icon: Icon, period }) => (
+            <SelectContent className="z-[60] max-h-60">
+              {TIME_SLOTS.map(({ value, label }) => (
                 <SelectItem key={value} value={value}>
-                  <div className="flex items-center gap-2">
-                    <Icon className="h-4 w-4 text-muted-foreground" />
-                    <span>{label}</span>
-                    <span className="text-muted-foreground text-xs">({period})</span>
-                  </div>
+                  {label}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
-
-        {/* Friendly tip */}
-        {date && time && (
-          <div className="w-full p-3 rounded-lg bg-primary/10 border border-primary/20 animate-fade-in">
-            <p className="text-sm text-primary font-medium text-center">
-              🌄 Great choice! {format(date, "EEEE")} at {TIME_SLOTS.find(t => t.value === time)?.label} — 
-              perfect for beating the crowds!
-            </p>
-          </div>
-        )}
       </div>
 
-      <div className="mt-6 pt-4 border-t border-border flex justify-end">
+      {/* Confirmation Banner */}
+      {isComplete && (
+        <div className="w-full p-4 rounded-lg border border-border bg-card mb-6 animate-fade-in">
+          <p className="text-sm text-emerald-600 font-medium">
+            🎉 Awesome! Your adventure is set for {format(date, "EEEE, MMMM do")} at {time}
+          </p>
+        </div>
+      )}
+
+      {/* Continue Button */}
+      <div className="flex justify-end">
         <Button 
-          size="default" 
+          size="lg" 
           onClick={onContinue}
           disabled={!isComplete}
-          className="px-8"
+          className="px-12 h-12"
         >
           Continue
         </Button>
